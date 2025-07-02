@@ -8,6 +8,9 @@ OUTPUT_FILE = "manifest.json"
 
 # Patterns or folders to ignore
 IGNORE_PATTERNS = [
+    ".gitignore",
+    ".vscode/*",
+    ".micropico",
     ".git/*",
     ".github/*",
     "node_modules/*",
