@@ -1,9 +1,4 @@
-import network, socket, ssl, json, time, machine
-
-WIFI_SSID     = "NU"
-WIFI_PASSWORD = "1234512345"
-TG_TOKEN      = "8007396055:AAG0B54py1ASPmz8RLgfeJPNmCfg48pzScI"
-TG_CHAT_ID    = "-1002402631866"
+import network, time
 
 class WiFi:
     def __init__(self, ssid: str, password: str, timeout: int = 10):
