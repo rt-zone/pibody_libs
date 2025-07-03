@@ -80,3 +80,6 @@ class Display(DisplayPlus):
     def __init__(self):
         super().__init__()
 
+class Servo(ServoPlus):
+    def __init__(self, pin, freq=50):
+        super().__init__(pin=pin, freq=freq)
