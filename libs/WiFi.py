@@ -1,4 +1,5 @@
-import network, time
+import network, time, socket, struct
+NTP_HOST = 'pool.ntp.org'
 
 class WiFi:
     def __init__(self, ssid: str, password: str, timeout: int = 10):
@@ -18,7 +19,7 @@ class WiFi:
 
         start = time.ticks_ms()
         while not self.wlan.isconnected():
-            if time.ticks_diff(time.ticks_ms(), start) < self.timeout * 1000:
+            if time.ticks_diff(time.ticks_ms(), start) > (self.timeout * 1000):
                 raise RuntimeError("Wi-Fi connection timed out.")
             time.sleep(0.5)
 
@@ -36,4 +37,20 @@ class WiFi:
 
     def ip(self):
         return self.wlan.ifconfig()[0] if self.is_connected() else None
+    
+    def get_time(self, gmt=5):
+        NTP_DELTA = 2208988800
+        NTP_QUERY = bytearray(48)
+        NTP_QUERY[0] = 0x1B
+        gmt_offset = gmt * 3600
+        addr = socket.getaddrinfo(NTP_HOST, 123)[0][-1]
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            s.settimeout(1)
+            res = s.sendto(NTP_QUERY, addr)
+            msg = s.recv(48)
+        finally:
+            s.close()
+        ntp_time = struct.unpack("!I", msg[40:44])[0]
+        return time.gmtime(ntp_time - NTP_DELTA + gmt_offset)
 

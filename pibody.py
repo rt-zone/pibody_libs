@@ -11,6 +11,7 @@ from libs.general.NeoPixelPlus import NeoPixelPlus
 from libs.general.BuzzerPlus import BuzzerPlus
 from libs.general.ServoPlus import ServoPlus
 from libs.DisplayPlus import DisplayPlus
+from libs.WiFi import WiFi
 
 _SLOT_MAP = {
     'A': (0, 0, 1),
