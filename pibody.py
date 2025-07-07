@@ -1,11 +1,11 @@
 from machine import Pin, I2C, SoftI2C
 
-from libs.i2c.BME280 import BME280  
-from libs.i2c.MPU6050 import MPU6050
-from libs.i2c.LSM6DS3 import LSM6DS3
-from libs.i2c.VEML6040 import VEML6040
-from libs.i2c.VL53L0X import VL53L0X
-from libs.i2c.SSD1306 import SSD1306
+from BME280 import BME280  
+from MPU6050 import MPU6050
+from LSM6DS3 import LSM6DS3
+from VEML6040 import VEML6040
+from VL53L0X import VL53L0X
+from SSD1306 import SSD1306
 from libs.general.RotaryEncoder import RotaryEncoder
 from libs.general.NeoPixelPlus import NeoPixelPlus
 from libs.general.BuzzerPlus import BuzzerPlus
