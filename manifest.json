@@ -1,6 +1,6 @@
 {
   "pibody.py": "311b3aafc0b76c45db6b9a11076eddc46ea09810df91f3a068de4f3140af32b8",
-  "libs/DisplayPlus.py": "6c8bf53ac399786cbbee52ea6eb70cdc24deda38a5dd2463f61df317820eb634",
+  "libs/DisplayPlus.py": "9030f7c9c684a7b9ba340a53affc626ebd0ee54a9f7105103ec68f1461ba85a3",
   "libs/i2c/VEML6040.py": "8be56dbe38b44df63f2fa811d1865185443b2137168c88c78d3606feecf4f921",
   "libs/i2c/MPU6050.py": "f086abd927ed245fe45de6d677287cd5d637eadafa5e4cd8c914f062f824e77e",
   "libs/i2c/BME280.py": "bfb50283b3017263dadc7e38b2125f5e6a45cfd40d1d2cff58e569be6ee1aaf9",
