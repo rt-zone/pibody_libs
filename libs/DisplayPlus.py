@@ -1,7 +1,9 @@
 from machine import Pin, SPI
 import st7789
 import vga2_8x16 as font_small
-import vga2_bold_16x32 as font
+import vga2_16x16 as font_medium
+import vga2_16x32 as font_big
+import vga2_bold_16x32 as font_bold 
 import math
 
 class DisplayPlus(st7789.ST7789):
@@ -19,7 +21,9 @@ class DisplayPlus(st7789.ST7789):
         self.display.init()
 
         self.font_small = font_small
-        self.font_bold = font
+        self.font_medium = font_medium
+        self.font_big = font_big
+        self.font_bold = font_bold
         
         self.BLACK = st7789.BLACK
         self.BLUE = st7789.BLUE
@@ -118,8 +122,8 @@ class DisplayPlus(st7789.ST7789):
         super().fill(st7789.WHITE)
         self.draw_poligon(x, y, r, 8, bump=0.7, fill=True, color=st7789.BLACK)
         self.draw_poligon(x, y, r * 0.7, 4, bump=0.3, fill=True, color=st7789.WHITE, angle_offset=0)
-        self.text("Artisan", x - r, y + r, font=font, fg=st7789.BLACK, bg=st7789.WHITE)
-        self.text("Education", x - r, y + r + 32, font=font, fg=st7789.BLACK, bg=st7789.WHITE)
+        self.text("Artisan", x - r, y + r, font=font_bold, fg=st7789.BLACK, bg=st7789.WHITE)
+        self.text("Education", x - r, y + r + 32, font=font_bold, fg=st7789.BLACK, bg=st7789.WHITE)
         self.text("artisan.education", 100, 300, fg=st7789.BLACK, bg=st7789.WHITE)
 
     def print(self, text, x=10, max_width=None, font_width=8):
