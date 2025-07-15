@@ -5,7 +5,7 @@
   "libs/iot/WiFi.py": "96c7436b8567d5924b303cb26c0649d8ebda60ccc036c0673fde5ab52f93b1b6",
   "libs/i2c/SSD1306.py": "deaa4ceb3461ca3d723e6bf8c0a3a191e5192547f3e5ca3504ba6913b87f87f0",
   "libs/i2c/BME280.py": "bfb50283b3017263dadc7e38b2125f5e6a45cfd40d1d2cff58e569be6ee1aaf9",
-  "libs/i2c/VEML6040.py": "951db4a79bd39e3b6fbd1c96fe7aec5fc576c6194c38b7bf2685627d644c4ecb",
+  "libs/i2c/VEML6040.py": "d1ca93a38201dfcd472e1850027cad3455c6b713a06b57717a22450b0b0f62bd",
   "libs/i2c/VL53L0X.py": "b6e40bdf05bd280ee2fdc1490ac7b50c378f2d805651be80bac8cd7295b14fd8",
   "libs/i2c/MPU6050.py": "f086abd927ed245fe45de6d677287cd5d637eadafa5e4cd8c914f062f824e77e",
   "libs/i2c/LSM6DS3.py": "e25e529eed14aa179cc57a50863c01a75bc59cd2dd0b2a7f7ce4b2e404ba8805",
