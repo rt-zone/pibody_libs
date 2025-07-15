@@ -103,7 +103,7 @@ class VEML6040(object):
         colour_Z = (-0.155901*u16red)+(0.251534*u16grn)+(-0.076240*u16blu)
         colour_total = colour_X+colour_Y+colour_Z
         if colour_total == 0:
-            return {"red":_NaN,"green":_NaN,"blue":_NaN,"white":_NaN,"als":_NaN,"cct":_NaN}
+            return {"red":0,"green":0,"blue":0,"white":0,"als":0,"cct":0}
         else:
             colour_x = colour_X / colour_total
             colour_y = colour_Y / colour_total
@@ -147,7 +147,7 @@ class VEML6040(object):
         return {'red': r, 'green': g, 'blue':b, 'hue': h, 'sat':s, 'val':v}
 
     # Detects the color out of list.
-    def detectColor(self, hues={"red":0,"yellow":60,"green":120,"light-blue":180,"blue":240,"pink":300}, min_brightness=0):
+    def detectColor(self, hues={"red":0,"yellow":60,"green":120,"light-blue":180,"blue":240,"magenta":300}, min_brightness=0.0009):
         h, s, v = self.readHSV()
         if v > min_brightness:
             key, val = min(hues.items(), key=lambda x: min(360-abs(h - x[1]),abs(h - x[1]))) # nearest neighbour, but it wraps!
