@@ -33,19 +33,25 @@ class MPU6050:
         raw = self._combine(data[0], data[1])
         return (raw / 340.0) + 36.53
 
-    def read_accel_data(self):
+    def read_accel(self):
         data = self.i2c.readfrom_mem(self.address, 0x3B, 6)
         x = self._combine(data[0], data[1]) / 16384.0
         y = self._combine(data[2], data[3]) / 16384.0
         z = self._combine(data[4], data[5]) / 16384.0
         return (x, y, z)
 
-    def read_gyro_data(self):
+    def read_gyro(self):
         data = self.i2c.readfrom_mem(self.address, 0x43, 6)
         x = self._combine(data[0], data[1]) / 131.0
         y = self._combine(data[2], data[3]) / 131.0
         z = self._combine(data[4], data[5]) / 131.0
         return (x, y, z)
+
+    def read(self):
+        temp = self.read_temperature()
+        ax, ay, az = self.read_accel()
+        gx, gy, gz = self.read_gyro()
+        return {'temp':temp, 'accel':(ax,ay,az), 'gyro':(gx,gy,gz)}
 
     def add_tilt_listener(self, direction, callback):
         if direction not in self._tilt_listeners:
@@ -53,7 +59,7 @@ class MPU6050:
         self._tilt_listeners[direction].append(callback)
 
     def check_tilt(self):
-        x, y, _ = self.read_accel_data()
+        x, y, _ = self.read_accel()
         if x > self._tilt_threshold:
             for fn in self._tilt_listeners["forward"]:
                 fn()

@@ -77,30 +77,33 @@ class LSM6DS3:
     def _read_reg(self, reg, size):
         return self.i2c.readfrom_mem(self.address, reg, size)
 
-    def get_readings(self):
-
+    def read(self):
         # Read 12 bytes starting from 0x22. This covers the XYZ data for gyro and accel
         data = self._read_reg(OUTX_L_G, 12)
 
         gx = (data[1] << 8) | data[0]
         gx = twos_comp(gx)
-
         gy = (data[3] << 8) | data[2]
         gy = twos_comp(gy)
-
         gz = (data[5] << 8) | data[4]
         gz = twos_comp(gz)
 
         ax = (data[7] << 8) | data[6]
         ax = twos_comp(ax)
-
         ay = (data[9] << 8) | data[8]
         ay = twos_comp(ay)
-
         az = (data[11] << 8) | data[10]
         az = twos_comp(az)
 
-        return ax, ay, az, gx, gy, gz
+        return {'accel':(ax, ay, az), 'gyro':(gx, gy, gz)}
+
+    def read_accel(self):
+        data = self.read()
+        return data['accel']
+
+    def read_gyro(self):
+        data = self.read()
+        return data['gyro']
 
     def get_step_count(self):
 

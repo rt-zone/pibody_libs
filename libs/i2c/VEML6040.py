@@ -121,11 +121,11 @@ class VEML6040(object):
         h, s, v = rgb2hsv(r, g, b)
         return (h, s, v)
 
-    def readRGB(self, ratio=1.0, r_ratio=2.0, g_ratio=1.7, b_ratio=1.9):
+    def readRGB(self):
         rgb = self.readRawData()
         raw_r = round(rgb['red']   / 65535 * 255)
         raw_g = round(rgb['green'] / 65535 * 255)
-        raw_b = round(rgb['blue']  / 65535 * 255)  
+        raw_b = round(rgb['blue']  / 65535 * 255)
 
         m11, m12, m13 = 11.2575 , -7.4708 , 0.2273
         m21, m22, m23 = -0.4733 , 3.9696  , -1.9689
