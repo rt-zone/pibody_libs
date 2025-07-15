@@ -50,6 +50,7 @@ def get_i2c(slot, soft_i2c=False):
     else:
         return I2C(bus, scl=Pin(scl), sda=Pin(sda))
 
+
 # i2c modules
 class ClimateSensor(BME280):
     def __init__(self, slot, soft_i2c=False):
