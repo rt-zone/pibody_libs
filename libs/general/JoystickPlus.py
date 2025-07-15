@@ -1,6 +1,6 @@
 from machine import ADC, Pin
 
-class JoystickPlus(ADC):
+class JoystickPlus():
     def __init__(self, pinX, pinY):
         self.X = ADC(Pin(pinX))
         self.Y = ADC(Pin(pinY))
