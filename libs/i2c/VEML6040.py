@@ -1,5 +1,5 @@
-from math import sqrt
 from utime import sleep_ms
+
 # Registers
 _CONF = b'\x00'
 _ENABLE = b'\xFE'
@@ -34,15 +34,46 @@ def rgb2hsv(r, g, b):
             b: (r - g) / d+4,
         }[high]
         h /= 6
-    return {'hue':h*360,'sat':s, 'val':v}
+    return (h*360, s, v)
+
+def hsv2rgb(h, s, v):
+    """
+    Convert HSV to RGB.
+    h: Hue in degrees [0, 360)
+    s: Saturation [0, 1]
+    v: Value [0, 1]
+    Returns:
+    (r, g, b): Each in [0, 1]
+    """
+    c = v * s
+    h_prime = h / 60
+    x = c * (1 - abs(h_prime % 2 - 1))
+    m = v - c
+
+    if 0 <= h_prime < 1:
+        r1, g1, b1 = c, x, 0
+    elif 1 <= h_prime < 2:
+        r1, g1, b1 = x, c, 0
+    elif 2 <= h_prime < 3:
+        r1, g1, b1 = 0, c, x
+    elif 3 <= h_prime < 4:
+        r1, g1, b1 = 0, x, c
+    elif 4 <= h_prime < 5:
+        r1, g1, b1 = x, 0, c
+    elif 5 <= h_prime < 6:
+        r1, g1, b1 = c, 0, x
+    else:
+        r1, g1, b1 = 0, 0, 0  # if h is out of range
+
+    r, g, b = r1 + m, g1 + m, b1 + m
+    return (r, g, b)
+
 
 class VEML6040(object):
-    
     def __init__(self, i2c, address=0x10, freq=400000):
         self.i2c = i2c
         self.address = address
         self.freq = freq
-
 
         try:
             self.i2c.writeto(self.address, _CONF + _SHUTDOWN)
@@ -50,19 +81,10 @@ class VEML6040(object):
             sleep_ms(100)
         except Exception as e:
             raise RuntimeError("Failed to initialize ColorSensor. Check wiring and connection.") from e
-
-        
-    def classifyHue(self, hues={"red":0,"yellow":60,"green":120,"cyan":180,"blue":240,"magenta":300}, min_brightness=0):
-        d=self.readHSV()
-        if d['val'] > min_brightness:
-            key, val = min(hues.items(), key=lambda x: min(360-abs(d['hue'] - x[1]),abs(d['hue'] - x[1]))) # nearest neighbour, but it wraps!
-            return key
-        else:
-            return 'None'
     
     # Read colours from VEML6040
     # Returns raw red, green and blue readings, ambient light [Lux] and colour temperature [K]
-    def readRGB(self):
+    def readRawData(self):
         raw_data = self.i2c.readfrom_mem(self.address, _REG_RED, 2)        # returns a bytes object   
         u16red = int.from_bytes(raw_data, 'little')
         
@@ -95,40 +117,43 @@ class VEML6040(object):
         return {"red":u16red,"green":u16grn,"blue":u16blu,"white":data_white_int,"als":colour_ALS,"cct":colour_CCT}
     
     def readHSV(self):
-        d = self.readRGB()
-        return rgb2hsv(d['red'],d['green'],d['blue'])
-    
+        r, g, b = self.readRGB()
+        h, s, v = rgb2hsv(r, g, b)
+        return (h, s, v)
+
+    def readRGB(self, ratio=1.0, r_ratio=2.0, g_ratio=1.7, b_ratio=1.9):
+        rgb = self.readRawData()
+        raw_r = round(rgb['red']   / 65535 * 255)
+        raw_g = round(rgb['green'] / 65535 * 255)
+        raw_b = round(rgb['blue']  / 65535 * 255)  
+
+        m11, m12, m13 = 11.2575 , -7.4708 , 0.2273
+        m21, m22, m23 = -0.4733 , 3.9696  , -1.9689
+        m31, m32, m33 = 1.4107  , -1.8697 , 4.5144
+
+        r = m11*raw_r + m12*raw_g + m13*raw_b
+        g = m21*raw_r + m22*raw_g + m23*raw_b
+        b = m31*raw_r + m32*raw_g + m33*raw_b
+
+        r = max(0, min(round(r), 255))
+        g = max(0, min(round(g), 255))
+        b = max(0, min(round(b), 255))
+
+        return (r, g, b)
+
+    def read(self):
+        r, g, b = self.readRGB()
+        h, s, v = self.readHSV()
+        return {'red': r, 'green': g, 'blue':b, 'hue': h, 'sat':s, 'val':v}
+
     # Detects the color out of list.
-    def detectColor(self):
-        hsv = self.readHSV()
-        h, s, v = hsv['hue'], hsv['sat'], hsv['val']
-
-        # Tuneable thresholds
-        if v < 0.015:
-            return "black"
-        if s < 0.15 and v > 0.75:
-            return "white"
-        if s < 0.15 and v <= 0.75:
-            return "gray"
-
-        if h < 15 or h >= 345:
-            return "red"
-        elif 15 <= h < 35:
-            return "orange"
-        elif 35 <= h < 65:
-            return "yellow"
-        elif 65 <= h < 170:
-            return "green"
-        elif 170 <= h < 200:
-            return "cyan"
-        elif 200 <= h < 250:
-            return "blue"
-        elif 250 <= h < 295:
-            return "magenta"
-        elif 295 <= h < 345:
-            return "pink"
+    def detectColor(self, hues={"red":0,"yellow":60,"green":120,"light-blue":180,"blue":240,"pink":300}, min_brightness=0):
+        h, s, v = self.readHSV()
+        if v > min_brightness:
+            key, val = min(hues.items(), key=lambda x: min(360-abs(h - x[1]),abs(h - x[1]))) # nearest neighbour, but it wraps!
+            return key
         else:
-            return "unknown"
+            return 'None'
 
      # Measures ambient light in Lux
     def lux(self):
