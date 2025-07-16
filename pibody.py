@@ -43,21 +43,21 @@ def get_slot_pins(slot, adc=False, joystick=False):
     bus, sda, scl = _SLOT_MAP[slot]
     return (bus, sda, scl)
 
-def get_i2c(slot, soft_i2c=False):
+def get_i2c(slot, hard_i2c=False):
     bus, sda, scl = get_slot_pins(slot)
-    if soft_i2c:
-        return SoftI2C(scl=Pin(scl), sda=Pin(sda))
-    else:
+    if hard_i2c:
         return I2C(bus, scl=Pin(scl), sda=Pin(sda))
+    else:
+        return SoftI2C(scl=Pin(scl), sda=Pin(sda))
 
 
 # i2c modules
 class ClimateSensor(BME280):
-    def __init__(self, slot, soft_i2c=False):
-        super().__init__(get_i2c(slot, soft_i2c))
+    def __init__(self, slot, hard_i2c=False):
+        super().__init__(get_i2c(slot, hard_i2c))
 
-def GyroAxelSensor(slot, soft_i2c=False):
-    i2c = get_i2c(slot, soft_i2c)
+def GyroAxelSensor(slot, hard_i2c=False):
+    i2c = get_i2c(slot, hard_i2c)
     if 0x68 in i2c.scan():
         return MPU6050(i2c)
     elif 0x6A in i2c.scan():
@@ -66,18 +66,18 @@ def GyroAxelSensor(slot, soft_i2c=False):
         raise ValueError(f"Invalid i2c address '{i2c.scan()}' for slot '{slot}'")  
 
 class ColorSensor(VEML6040):
-    def __init__(self, slot, soft_i2c=False):
-        super().__init__(get_i2c(slot, soft_i2c))
+    def __init__(self, slot, hard_i2c=False):
+        super().__init__(get_i2c(slot, hard_i2c))
 
 class DistanceSensor(VL53L0X):
-    def __init__(self, slot, soft_i2c=False):
-        super().__init__(get_i2c(slot, soft_i2c))
+    def __init__(self, slot, hard_i2c=False):
+        super().__init__(get_i2c(slot, hard_i2c))
 
 
 # displays 
 class OLED(SSD1306):
-    def __init__(self, slot, soft_i2c=False, width=128, height=64):
-        super().__init__(get_i2c(slot, soft_i2c), width=width, height=height)
+    def __init__(self, slot, hard_i2c=False, width=128, height=64):
+        super().__init__(get_i2c(slot, hard_i2c), width=width, height=height)
 
 class Display(DisplayPlus):
     def __init__(self):
