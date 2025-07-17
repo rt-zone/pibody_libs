@@ -44,6 +44,8 @@ def get_slot_pins(slot, adc=False, joystick=False):
     return (bus, sda, scl)
 
 def get_i2c(slot, hard_i2c=False):
+    if type(slot) == I2C or type(slot) == SoftI2C:
+        return slot
     bus, sda, scl = get_slot_pins(slot)
     if hard_i2c:
         return I2C(bus, scl=Pin(scl), sda=Pin(sda))

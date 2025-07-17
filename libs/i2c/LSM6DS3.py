@@ -82,18 +82,18 @@ class LSM6DS3:
         data = self._read_reg(OUTX_L_G, 12)
 
         gx = (data[1] << 8) | data[0]
-        gx = twos_comp(gx)
+        gx = twos_comp(gx) / 131.0
         gy = (data[3] << 8) | data[2]
-        gy = twos_comp(gy)
+        gy = twos_comp(gy) / 131.0
         gz = (data[5] << 8) | data[4]
-        gz = twos_comp(gz)
+        gz = twos_comp(gz) / 131.0
 
         ax = (data[7] << 8) | data[6]
-        ax = twos_comp(ax)
+        ax = twos_comp(ax) / 16384.0
         ay = (data[9] << 8) | data[8]
-        ay = twos_comp(ay)
+        ay = twos_comp(ay) / 16384.0
         az = (data[11] << 8) | data[10]
-        az = twos_comp(az)
+        az = twos_comp(az) / 16384.0
 
         return {'accel':(ax, ay, az), 'gyro':(gx, gy, gz)}
 
