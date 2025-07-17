@@ -1,5 +1,5 @@
 {
-  "pibody.py": "a8c8bef5e6aa62a3d0484cb01355ccc94ae726bc7fb2c8ec2defc03d5d6f9e57",
+  "pibody.py": "91257eaa51678df5ca3cebf9022c82ec3cf1348f4df70029e0ed33e419d67db8",
   "libs/DisplayPlus.py": "9030f7c9c684a7b9ba340a53affc626ebd0ee54a9f7105103ec68f1461ba85a3",
   "libs/iot/telegram_bot.py": "3bd6c9685feb544c907a3f3dd5d7493c8055e65dc3c22d30fed45fc98e24b5e5",
   "libs/iot/WiFi.py": "96c7436b8567d5924b303cb26c0649d8ebda60ccc036c0673fde5ab52f93b1b6",
@@ -8,7 +8,7 @@
   "libs/i2c/VEML6040.py": "e4dcfad9216fa9e69e2e51878cd7c1c6aeea473cb396780a4f8d3b4a287a2cad",
   "libs/i2c/VL53L0X.py": "b6e40bdf05bd280ee2fdc1490ac7b50c378f2d805651be80bac8cd7295b14fd8",
   "libs/i2c/MPU6050.py": "9b65134493171fec6bd40eb0a552664ff50c7525ca4b5f657f0272cf5480345d",
-  "libs/i2c/LSM6DS3.py": "049f9aeedc7a8a3b05f4f82fdeb53bb8b8315b39912ea7bd0e8527e7bcbe0a78",
+  "libs/i2c/LSM6DS3.py": "ae062014dcaf4c4b92959104d456124427c2c32adeedce9689daac3159cc7430",
   "libs/general/ServoPlus.py": "fa8ba242d6ecc11b01738aae6b56b055a7b57bbf49293853363cf3e6e586e9dc",
   "libs/general/BuzzerPlus.py": "370efce44723f39d9e84da177148435a3fbc00781d8192bff70d8028fa5ab884",
   "libs/general/JoystickPlus.py": "d405006b7eb0c77640551953bb2acf7cc0313041963ce91ff75a316d05deb3e4",
