@@ -10,7 +10,7 @@
   "libs/i2c/MPU6050.py": "9b65134493171fec6bd40eb0a552664ff50c7525ca4b5f657f0272cf5480345d",
   "libs/i2c/LSM6DS3.py": "ae062014dcaf4c4b92959104d456124427c2c32adeedce9689daac3159cc7430",
   "libs/general/ServoPlus.py": "fa8ba242d6ecc11b01738aae6b56b055a7b57bbf49293853363cf3e6e586e9dc",
-  "libs/general/BuzzerPlus.py": "370efce44723f39d9e84da177148435a3fbc00781d8192bff70d8028fa5ab884",
+  "libs/general/BuzzerPlus.py": "ab341776552a0f6f6be74cae22401350bbeea270918cd07b28202809ae498741",
   "libs/general/JoystickPlus.py": "d405006b7eb0c77640551953bb2acf7cc0313041963ce91ff75a316d05deb3e4",
   "libs/general/RotaryEncoder.py": "bb78ef2da48bc8b95614bfd92d2fb9acbe499c66f16760eead670e63818c58d4",
   "libs/general/NeoPixelPlus.py": "6eec2422d05b232ca6669e19b4f2bd691b7b335272ac4c085797ec2ba6bbf210"
