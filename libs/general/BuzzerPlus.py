@@ -19,7 +19,7 @@ class BuzzerPlus:
         if duty_cycle is None:
             return self.duty_cycle()
         else:
-            self._volume = (abs(65535 - duty_cycle) / 32768)
+            self._volume = (1.0 - (abs(32768 - duty_cycle) / 32768))
             self._duty_cycle = duty_cycle
             self.buzzer.duty_u16(duty_cycle)
 
