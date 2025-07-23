@@ -4,7 +4,7 @@
   "libs/iot/telegram_bot.py": "3bd6c9685feb544c907a3f3dd5d7493c8055e65dc3c22d30fed45fc98e24b5e5",
   "libs/iot/WiFi.py": "96c7436b8567d5924b303cb26c0649d8ebda60ccc036c0673fde5ab52f93b1b6",
   "libs/general/ServoPlus.py": "061f9ca90ea9cbc9600a524f021a9f550c3b1f97626050a282c0c30c870a175e",
-  "libs/general/BuzzerPlus.py": "b803cdccf5fe3293a9464ea30d72aa86b74e58216c83cb5f560a96af7f2a5de4",
+  "libs/general/BuzzerPlus.py": "82540739383212f1b5fe2e6f9cd538eeece5405b7cd2e13d3089ddee552baba2",
   "libs/general/JoystickPlus.py": "d405006b7eb0c77640551953bb2acf7cc0313041963ce91ff75a316d05deb3e4",
   "libs/general/RotaryEncoder.py": "bb78ef2da48bc8b95614bfd92d2fb9acbe499c66f16760eead670e63818c58d4",
   "libs/general/NeoPixelPlus.py": "6eec2422d05b232ca6669e19b4f2bd691b7b335272ac4c085797ec2ba6bbf210"
