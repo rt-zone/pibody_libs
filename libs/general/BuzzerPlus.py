@@ -53,6 +53,10 @@ class BuzzerPlus:
     def on(self, freq=None, volume=None):
         if freq is None:
             freq = self._freq
+        if volume is None:
+            volume = self._volume
+        self.freq(freq)
+        self.volume(volume)
         self.buzzer.duty_u16(self.duty_cycle())
 
     def off(self):
