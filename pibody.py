@@ -141,6 +141,11 @@ class Potentiometer(ADC):
         _, sda, _ = get_slot_pins(slot, adc=True)
         super().__init__(Pin(sda))
 
+class Microphone(ADC):
+    def __init__(self, slot):
+        _, sda, _ = get_slot_pins(slot, adc=True)
+        super().__init__(Pin(sda))
+
 class Joystick(JoystickPlus):
     def __init__(self, slot):
         _, sda, scl = get_slot_pins(slot, joystick=True)
