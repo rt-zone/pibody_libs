@@ -12,7 +12,7 @@ class ServoPlus:
             return self._freq
         else:
             self._freq = frequency
-            self.buzzer.freq(frequency)
+            self.servo.freq(frequency)
 
     def duty_u16(self, duty_cycle=None):
         if duty_cycle is None:
@@ -26,7 +26,7 @@ class ServoPlus:
             else:
                 self._angle = None
             self._duty_cycle = duty_cycle
-            self.buzzer.duty_u16(duty_cycle)
+            self.servo.duty_u16(duty_cycle)
 
 
     def angle(self, angle=None):
