@@ -1,7 +1,9 @@
 from machine import Pin, SPI
 import st7789
 import vga2_8x16 as font_small
-import vga2_bold_16x32 as font
+import vga2_16x16 as font_medium
+import vga2_16x32 as font_big
+import vga2_bold_16x32 as font_bold 
 import math
 
 class DisplayPlus(st7789.ST7789):
@@ -19,7 +21,9 @@ class DisplayPlus(st7789.ST7789):
         self.display.init()
 
         self.font_small = font_small
-        self.font_bold = font
+        self.font_medium = font_medium
+        self.font_big = font_big
+        self.font_bold = font_bold
         
         self.BLACK = st7789.BLACK
         self.BLUE = st7789.BLUE
@@ -57,8 +61,30 @@ class DisplayPlus(st7789.ST7789):
                 dy = center_y + r * math.sin(math.pi/180*i)
                 self.display.pixel(round(dx), round(dy), color)
 
+    def linear_bar(self, x, y, length, value, min_value, max_value, height=5, border=False, color=st7789.GREEN, border_color=st7789.WHITE, background_color=st7789.BLACK):
+        even = 1 - height % 2
+        n = int((height-1-even)/2)
+        
+        if border:
+            self.rect(x-1, y-n-1, length+3, height+2, border_color)
+            line_color = background_color
+        else:
+            for i in range(2):
+                self.vline(x-1-i, y-n, height, border_color)
+                self.vline(x + length + 1 + i, y-n, height, border_color)
+            line_color = border_color
 
-    def progress_bar(self, center_x, center_y, r, value, min_value, max_value, width=2, color=st7789.GREEN, background_color=st7789.WHITE):
+        value = min(max(value - min_value, 0), max_value - min_value) / (max_value - min_value)
+
+        for i in range(height):
+            self.line(x, y - n + i, x + math.floor(length * value), y - n + i, color)
+        for i in range(n):
+            self.line(x + math.floor(length * value), y - 1 - i, x + length - 1, y - 1 - i, background_color)
+            self.line(x + math.floor(length * value), y + 1 + even + i, x + length - 1, y + 1 + even + i, background_color)
+        self.line(x + math.floor(length * value), y, x + length, y, line_color)
+        self.line(x + math.floor(length * value), y + even, x + length, y + even, line_color)
+
+    def circular_bar(self, center_x, center_y, r, value, min_value, max_value, width=2, color=st7789.GREEN, background_color=st7789.WHITE):
         # Get angle from value
         angle = min(max(value - min_value, 0), max_value - min_value) / (max_value - min_value) * 360
         # Draw progress bar
@@ -96,8 +122,8 @@ class DisplayPlus(st7789.ST7789):
         super().fill(st7789.WHITE)
         self.draw_poligon(x, y, r, 8, bump=0.7, fill=True, color=st7789.BLACK)
         self.draw_poligon(x, y, r * 0.7, 4, bump=0.3, fill=True, color=st7789.WHITE, angle_offset=0)
-        self.text("Artisan", x - r, y + r, font=font, fg=st7789.BLACK, bg=st7789.WHITE)
-        self.text("Education", x - r, y + r + 32, font=font, fg=st7789.BLACK, bg=st7789.WHITE)
+        self.text("Artisan", x - r, y + r, font=font_bold, fg=st7789.BLACK, bg=st7789.WHITE)
+        self.text("Education", x - r, y + r + 32, font=font_bold, fg=st7789.BLACK, bg=st7789.WHITE)
         self.text("artisan.education", 100, 300, fg=st7789.BLACK, bg=st7789.WHITE)
 
     def print(self, text, x=10, max_width=None, font_width=8):

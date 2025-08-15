@@ -19,6 +19,7 @@ class BuzzerPlus:
         if duty_cycle is None:
             return self.duty_cycle()
         else:
+            self._volume = (1.0 - (abs(32768 - duty_cycle) / 32768))
             self._duty_cycle = duty_cycle
             self.buzzer.duty_u16(duty_cycle)
 
@@ -30,9 +31,11 @@ class BuzzerPlus:
     def volume(self, volume=None):
         if volume is None:
             return self._volume
-        else:
+        if 0 <= volume <= 1.0:
             self._volume = volume
             self.duty_cycle()
+        else:
+            raise ValueError("Volume must be between 0 and 1.0")
 
 
     def beep(self, freq=None, volume=None, duration=0.1):
@@ -50,6 +53,10 @@ class BuzzerPlus:
     def on(self, freq=None, volume=None):
         if freq is None:
             freq = self._freq
+        if volume is None:
+            volume = self._volume
+        self.freq(freq)
+        self.volume(volume)
         self.buzzer.duty_u16(self.duty_cycle())
 
     def off(self):
