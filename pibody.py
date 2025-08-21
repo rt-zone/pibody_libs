@@ -1,6 +1,6 @@
 from machine import Pin, PWM, ADC, I2C, SoftI2C
 
-from BME280 import BME280  
+from BME280 import BME280
 from MPU6050 import MPU6050
 from LSM6DS3 import LSM6DS3
 from VEML6040 import VEML6040
@@ -90,7 +90,7 @@ class LEDTower(NeoPixelPlus):
         super().__init__(pin=pin, led_num=led_num)
 
 # general modules
-class EncoderSensor(RotaryEncoder):
+class Encoder(RotaryEncoder):
     def __init__(self, slot):
         _, sda, scl = get_slot_pins(slot)
         super().__init__(clk=sda, dt=scl)
@@ -110,41 +110,48 @@ def LED(slot, pwm=False):
         return Pin(sda, Pin.OUT)
     else:
         return PWM(Pin(sda), freq=50)
-
-class PushButton(Pin):
+    
+class ButtonLike(Pin):
     def __init__(self, slot):
         _, sda, _ = get_slot_pins(slot)
         super().__init__(sda, Pin.IN)
-
-class Switch(Pin):
+    def read(self):
+        return super().value()
+    
+class PushButton(ButtonLike):
     def __init__(self, slot):
-        _, sda, _ = get_slot_pins(slot)
-        super().__init__(sda, Pin.IN)
+        super().__init__(slot)
 
-class Touch(Pin):
+class Switch(ButtonLike):
     def __init__(self, slot):
-        _, sda, _ = get_slot_pins(slot)
-        super().__init__(sda, Pin.IN)
+        super().__init__(slot)
 
-class MotionDetector(Pin):
+class Touch(ButtonLike):
     def __init__(self, slot):
-        _, sda, _ = get_slot_pins(slot)
-        super().__init__(sda, Pin.IN)
+        super().__init__(slot)
 
-class LightSensor(ADC):
+class MotionDetector(ButtonLike):
+    def __init__(self, slot):
+        super().__init__(slot)
+
+class AnalogLike(ADC):
     def __init__(self, slot):
         _, sda, _ = get_slot_pins(slot, adc=True)
         super().__init__(Pin(sda))
+    
+    def read(self):
+        return self.read_u16()
 
-class Potentiometer(ADC):
+class LightSensor(AnalogLike):
     def __init__(self, slot):
-        _, sda, _ = get_slot_pins(slot, adc=True)
-        super().__init__(Pin(sda))
+        super().__init__(slot)
 
-class Microphone(ADC):
+class Potentiometer(AnalogLike):
     def __init__(self, slot):
-        _, sda, _ = get_slot_pins(slot, adc=True)
-        super().__init__(Pin(sda))
+        super().__init__(slot)
+
+def SoundSensor(slot, analog=False):
+    return AnalogLike(slot) if analog else ButtonLike(slot)
 
 class Joystick(JoystickPlus):
     def __init__(self, slot):

@@ -19,4 +19,8 @@ class NeoPixelPlus(NeoPixel):
 
     def __init__(self, pin=8, led_num=8):
         super().__init__(Pin(pin), led_num)
+        self.fill(self.BLACK)
+        self.write()
+
+    
     
