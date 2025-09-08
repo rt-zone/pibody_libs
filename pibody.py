@@ -58,7 +58,7 @@ class ClimateSensor(BME280):
     def __init__(self, slot, hard_i2c=False):
         super().__init__(get_i2c(slot, hard_i2c))
 
-def GyroAxelSensor(slot, hard_i2c=False):
+def GyroAxel(slot, hard_i2c=False):
     i2c = get_i2c(slot, hard_i2c)
     if 0x68 in i2c.scan():
         return MPU6050(i2c)
@@ -118,7 +118,7 @@ class ButtonLike(Pin):
     def read(self):
         return super().value()
     
-class PushButton(ButtonLike):
+class Button(ButtonLike):
     def __init__(self, slot):
         super().__init__(slot)
 
@@ -130,7 +130,7 @@ class Touch(ButtonLike):
     def __init__(self, slot):
         super().__init__(slot)
 
-class MotionDetector(ButtonLike):
+class MotionSensor(ButtonLike):
     def __init__(self, slot):
         super().__init__(slot)
 
