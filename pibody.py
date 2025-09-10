@@ -1,4 +1,4 @@
-from machine import Pin, PWM, ADC, I2C, SoftI2C
+from machine import Pin, ADC, I2C, SoftI2C
 
 from BME280 import BME280
 from MPU6050 import MPU6050
@@ -104,12 +104,12 @@ class Servo(ServoPlus):
     def __init__(self, pin, freq=50):
         super().__init__(pin=pin, freq=freq)
 
-def LED(slot, pwm=False):
-    _, sda, _ = get_slot_pins(slot)
-    if pwm:
-        return PWM(Pin(sda), freq=50)
-    else:
-        return Pin(sda, Pin.OUT)
+class LED(Pin):
+    def __init__(self, slot):
+        _, sda, _ = get_slot_pins(slot)
+        super().__init__(sda, Pin.OUT)
+    def read(self):
+        return super().value()
     
 class ButtonLike(Pin):
     def __init__(self, slot):
@@ -157,3 +157,20 @@ class Joystick(JoystickPlus):
     def __init__(self, slot):
         _, sda, scl = get_slot_pins(slot, joystick=True)
         super().__init__(pinX=sda, pinY=scl)
+
+
+import machine 
+_BASE_PWM = machine.PWM
+class PWM(_BASE_PWM):    
+    """
+    Set duty_cycle of PWM object in range from 0 to 1. 
+    """
+    def __init__(self, slot):
+        _, sda, _ = get_slot_pins(slot)
+        super().__init__(sda)
+
+    def duty(self, duty_cycle):
+        if duty_cycle < 0 or duty_cycle > 1: 
+            raise ValueError("duty_cycle must be in range from 0 to 1")
+        return self.duty_u16(int(duty_cycle * 65536))
+
