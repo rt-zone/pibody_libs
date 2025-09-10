@@ -106,10 +106,10 @@ class Servo(ServoPlus):
 
 def LED(slot, pwm=False):
     _, sda, _ = get_slot_pins(slot)
-    if not pwm:
-        return Pin(sda, Pin.OUT)
-    else:
+    if pwm:
         return PWM(Pin(sda), freq=50)
+    else:
+        return Pin(sda, Pin.OUT)
     
 class ButtonLike(Pin):
     def __init__(self, slot):
