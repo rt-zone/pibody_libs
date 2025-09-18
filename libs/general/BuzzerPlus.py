@@ -1,63 +1,38 @@
-from machine import Pin, PWM
-import time
-class BuzzerPlus:
+from libs.general.PWMPlus import PWMPlus
+from math import e
+from time import sleep
+
+def volume2duty(volume):
+    return (volume ** e / 2)
+
+class BuzzerPlus(PWMPlus):
     def __init__(self, pin):
-        self.buzzer = PWM(Pin(pin))
-        self.buzzer.duty_u16(0)
-        self._volume = 1.0
-        self._duty_cycle = 32768
-        self._freq = 1000
-
-    def freq(self, frequency=None):
-        if frequency is None:
-            return self._freq
-        else:
-            self._freq = frequency
-            self.buzzer.freq(frequency)
-
-    def duty_u16(self, duty_cycle=None):
-        if duty_cycle is None:
-            return self.duty_cycle()
-        else:
-            self._volume = (1.0 - (abs(32768 - duty_cycle) / 32768))
-            self._duty_cycle = duty_cycle
-            self.buzzer.duty_u16(duty_cycle)
-
-
-    def duty_cycle(self):
-        self._duty_cycle = int(32768 * self._volume)
-        return self._duty_cycle
+        super().__init__(pin)
+        self._volume = 0
 
     def volume(self, volume=None):
         if volume is None:
             return self._volume
-        if 0 <= volume <= 1.0:
-            self._volume = volume
-            self.duty_cycle()
-        else:
+        if not 0 <= volume <= 1.0:
             raise ValueError("Volume must be between 0 and 1.0")
+        self._volume = volume
+        duty = volume ** e
+        self.duty(duty / 2)
 
-
-    def beep(self, freq=None, volume=None, duration=0.1):
-        if freq is None:
-            freq = self._freq
-        if volume is None:
-            volume = self._volume
+    def make_sound(self, freq, volume, duration):
         self.freq(freq)
-        self.volume(volume)
+        self.duty(volume2duty(volume))
+        sleep(duration)
+        self.duty(0)
 
-        self.buzzer.duty_u16(self.duty_cycle())
-        time.sleep(duration)
-        self.buzzer.duty_u16(0)
+    def beep(self):
+        self.make_sound(1000, self._volume, 0.1)
+    
+    def boop(self):
+        self.make_sound(500, self._volume, 0.1)
         
-    def on(self, freq=None, volume=None):
-        if freq is None:
-            freq = self._freq
-        if volume is None:
-            volume = self._volume
-        self.freq(freq)
-        self.volume(volume)
-        self.buzzer.duty_u16(self.duty_cycle())
+    def on(self):
+        self.volume(self._volume)
 
     def off(self):
-        self.buzzer.duty_u16(0)
+        self.duty(0)

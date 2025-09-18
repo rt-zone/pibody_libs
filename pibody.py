@@ -12,6 +12,7 @@ from libs.general.NeoPixelPlus import NeoPixelPlus
 from libs.general.BuzzerPlus import BuzzerPlus
 from libs.general.ServoPlus import ServoPlus
 from libs.general.JoystickPlus import JoystickPlus
+from libs.general.PWMPlus import PWMPlus
 from libs.DisplayPlus import DisplayPlus
 from libs.iot.WiFi import WiFi
 from libs.iot.telegram_bot import TelegramBot
@@ -145,7 +146,7 @@ class AnalogLike(ADC):
         super().__init__(Pin(sda))
     
     def read(self):
-        return self.read_u16()
+        return self.read_u16() / 65536
 
 class LightSensor(AnalogLike):
     def __init__(self, slot):
@@ -163,19 +164,7 @@ class Joystick(JoystickPlus):
         _, sda, scl = get_slot_pins(slot, joystick=True)
         super().__init__(pinX=sda, pinY=scl)
 
-
-import machine 
-_BASE_PWM = machine.PWM
-class PWM(_BASE_PWM):    
-    """
-    Set duty_cycle of PWM object in range from 0 to 1. 
-    """
+class PWM(PWMPlus):
     def __init__(self, slot):
         _, sda, _ = get_slot_pins(slot)
         super().__init__(sda)
-
-    def duty(self, duty_cycle):
-        if duty_cycle < 0 or duty_cycle > 1: 
-            raise ValueError("duty_cycle must be in range from 0 to 1")
-        return self.duty_u16(int(duty_cycle * 65536))
-
