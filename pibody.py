@@ -6,6 +6,7 @@ from LSM6DS3 import LSM6DS3
 from VEML6040 import VEML6040
 from VL53L0X import VL53L0X
 from SSD1306 import SSD1306
+
 from libs.general.RotaryEncoder import RotaryEncoder
 from libs.general.NeoPixelPlus import NeoPixelPlus
 from libs.general.BuzzerPlus import BuzzerPlus
@@ -127,6 +128,10 @@ class Switch(ButtonLike):
         super().__init__(slot)
 
 class Touch(ButtonLike):
+    def __init__(self, slot):
+        super().__init__(slot)
+
+class TouchSensor(ButtonLike):
     def __init__(self, slot):
         super().__init__(slot)
 
