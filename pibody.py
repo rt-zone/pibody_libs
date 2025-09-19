@@ -60,6 +60,7 @@ class ClimateSensor(BME280):
     def __init__(self, slot, hard_i2c=False):
         super().__init__(get_i2c(slot, hard_i2c))
 
+
 def GyroAxel(slot, hard_i2c=False):
     i2c = get_i2c(slot, hard_i2c)
     if 0x68 in i2c.scan():
@@ -128,10 +129,6 @@ class Switch(ButtonLike):
     def __init__(self, slot):
         super().__init__(slot)
 
-class Touch(ButtonLike):
-    def __init__(self, slot):
-        super().__init__(slot)
-
 class TouchSensor(ButtonLike):
     def __init__(self, slot):
         super().__init__(slot)
@@ -168,3 +165,14 @@ class PWM(PWMPlus):
     def __init__(self, slot):
         _, sda, _ = get_slot_pins(slot)
         super().__init__(sda)
+
+
+# Aliases 
+Climate = ClimateSensor
+Color = ColorSensor
+Distance = DistanceSensor
+Touch = TouchSensor
+Motion = MotionSensor
+Light = LightSensor
+Pot = Potentiometer
+Sound = SoundSensor
