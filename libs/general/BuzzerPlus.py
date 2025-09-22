@@ -8,7 +8,7 @@ def volume2duty(volume):
 class BuzzerPlus(PWMPlus):
     def __init__(self, pin):
         super().__init__(pin)
-        self._volume = 0
+        self._volume = 0.5
 
     def volume(self, volume=None):
         if volume is None:

@@ -37,7 +37,7 @@ _ADC_SLOT_MAP = {
 def get_slot_pins(slot, adc=False, joystick=False):
     slot = slot.upper()[0]
     if joystick and (slot != 'F'):
-        print(f"Joystick is not supported for slot '{slot}'. Recomendation: Use slot 'F' instead.")
+        raise ValueError(f"Joystick is not supported for slot '{slot}'. Recomendation: Use slot 'F' instead.")
     elif adc and (slot not in _ADC_SLOT_MAP):
         raise ValueError(f"Invalid slot '{slot}'. Use C or F (Other slots are not ADC-compatible)")
     elif slot not in _SLOT_MAP:
@@ -111,14 +111,15 @@ class LED(Pin):
     def __init__(self, slot):
         _, sda, _ = get_slot_pins(slot)
         super().__init__(sda, Pin.OUT)
-    def read(self):
-        return super().value()
     
 class ButtonLike(Pin):
     def __init__(self, slot):
         _, sda, _ = get_slot_pins(slot)
         super().__init__(sda, Pin.IN)
     def read(self):
+        """
+            Returns 0 or 1
+        """
         return super().value()
     
 class Button(ButtonLike):
@@ -143,6 +144,9 @@ class AnalogLike(ADC):
         super().__init__(Pin(sda))
     
     def read(self):
+        """
+            Returns value of sensor from 0 to 1
+        """
         return self.read_u16() / 65536
 
 class LightSensor(AnalogLike):
