@@ -115,6 +115,7 @@ class RotaryEncoder(object):
 
     def set(self, value=None, min_val=None, incr=None,
             max_val=None, reverse=None, range_mode=None):
+        """Set encoder's configuration"""
         # disable DT and CLK pin interrupts
         self._hal_disable_irq()
 
@@ -135,7 +136,50 @@ class RotaryEncoder(object):
         # enable DT and CLK pin interrupts
         self._hal_enable_irq()
 
+    def bound(self, min_val, max_val):
+        """Bounds Encoder values in a range from min_val to max_val"""
+        self._hal_disable_irq()
+        self._value = min_val
+        self._min_val = min_val
+        self._max_val = max_val
+        self._range_mode = self.RANGE_BOUNDED        
+        self._hal_enable_irq()
+
+    def wrap(self, min_val, max_val):
+        """Wraps Encoder values in a range from min_val to max_val"""
+        self._hal_disable_irq()
+        self._value = min_val
+        self._min_val = min_val
+        self._max_val = max_val
+        self._range_mode = self.RANGE_WRAP        
+        self._hal_enable_irq()
+
+    def free(self):
+        """Default state of Encoder, resets bound and wrap mode."""
+        self._hal_disable_irq()
+        self._range_mode = self.RANGE_UNBOUNDED        
+        self._hal_enable_irq()
+
+    def toggle_direction(self):
+        """Changes directions of encoder rotation"""
+        self._hal_disable_irq()
+        self._reverse = 1 if self._reverse == -1 else -1     
+        self._hal_enable_irq()
+
+    def set_incr(self, incr):
+        """Changes increment value of encoder to incr. Default incr value: 1"""
+        self._hal_disable_irq()
+        self._incr = incr
+        self._hal_enable_irq()
+    
+    def set_value(self, value):
+        """Set's value of encoder to value variable"""
+        self._hal_disable_irq()
+        self._value = value
+        self._hal_enable_irq()
+
     def bar(self, width=20, fill_char="#", empty_char=" "):
+        """Prints encoder value in a bar format"""
         pos = int((self._value - self._min_val) / (self._max_val - self._min_val) * width)
         filled = fill_char * pos
         empty = empty_char * (width - pos)
@@ -148,24 +192,30 @@ class RotaryEncoder(object):
         print(f"\r[{filled}{empty}] {self._value}   ", end="")
 
     def value(self):
+        """Returns current value of encoder"""
         return self._value
 
     def old_value(self):
         return self._old_value
 
     def direction(self):
+        """Returns last rotation direction of encoder"""
         return self._direction
     
     def reset(self):
+        """Resets value of encoder to 0"""
         self._value = 0
 
     def close(self):
+        """Disables encoder"""
         self._hal_disable_irq()
 
     def add_listener(self, l):
+        """Append function as an argument. This function will be invoked once encoder is rotated"""
         self._listener.append(l)
 
     def remove_listener(self, l):
+        """Removes function from listener. This function will no longer be invoked once encoder is rotated"""
         if l not in self._listener:
             raise ValueError('{} is not an installed listener'.format(l))
         self._listener.remove(l)

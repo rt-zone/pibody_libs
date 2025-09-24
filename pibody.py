@@ -98,6 +98,9 @@ class Encoder(RotaryEncoder):
     def __init__(self, slot):
         _, sda, scl = get_slot_pins(slot)
         super().__init__(clk=sda, dt=scl)
+    
+    def read(self):
+        return self.value()
         
 class Buzzer(BuzzerPlus):
     def __init__(self, slot):
