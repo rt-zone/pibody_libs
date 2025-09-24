@@ -6,11 +6,14 @@ from LSM6DS3 import LSM6DS3
 from VEML6040 import VEML6040
 from VL53L0X import VL53L0X
 from SSD1306 import SSD1306
+
 from libs.general.RotaryEncoder import RotaryEncoder
 from libs.general.NeoPixelPlus import NeoPixelPlus
 from libs.general.BuzzerPlus import BuzzerPlus
 from libs.general.ServoPlus import ServoPlus
 from libs.general.JoystickPlus import JoystickPlus
+from libs.general.SoundSensorPlus import SoundSensorPlus
+from libs.general.PWMPlus import PWMPlus
 from libs.DisplayPlus import DisplayPlus
 from libs.iot.WiFi import WiFi
 from libs.iot.telegram_bot import TelegramBot
@@ -35,7 +38,7 @@ _ADC_SLOT_MAP = {
 def get_slot_pins(slot, adc=False, joystick=False):
     slot = slot.upper()[0]
     if joystick and (slot != 'F'):
-        print(f"Joystick is not supported for slot '{slot}'. Recomendation: Use slot 'F' instead.")
+        raise ValueError(f"Joystick is not supported for slot '{slot}'. Recomendation: Use slot 'F' instead.")
     elif adc and (slot not in _ADC_SLOT_MAP):
         raise ValueError(f"Invalid slot '{slot}'. Use C or F (Other slots are not ADC-compatible)")
     elif slot not in _SLOT_MAP:
@@ -57,6 +60,7 @@ def get_i2c(slot, hard_i2c=False):
 class ClimateSensor(BME280):
     def __init__(self, slot, hard_i2c=False):
         super().__init__(get_i2c(slot, hard_i2c))
+
 
 def GyroAxel(slot, hard_i2c=False):
     i2c = get_i2c(slot, hard_i2c)
@@ -108,14 +112,15 @@ class LED(Pin):
     def __init__(self, slot):
         _, sda, _ = get_slot_pins(slot)
         super().__init__(sda, Pin.OUT)
-    def read(self):
-        return super().value()
     
 class ButtonLike(Pin):
     def __init__(self, slot):
         _, sda, _ = get_slot_pins(slot)
         super().__init__(sda, Pin.IN)
     def read(self):
+        """
+            Returns 0 or 1
+        """
         return super().value()
     
 class Button(ButtonLike):
@@ -126,7 +131,7 @@ class Switch(ButtonLike):
     def __init__(self, slot):
         super().__init__(slot)
 
-class Touch(ButtonLike):
+class TouchSensor(ButtonLike):
     def __init__(self, slot):
         super().__init__(slot)
 
@@ -140,7 +145,10 @@ class AnalogLike(ADC):
         super().__init__(Pin(sda))
     
     def read(self):
-        return self.read_u16()
+        """
+            Returns value of sensor from 0 to 1
+        """
+        return self.read_u16() / 65536
 
 class LightSensor(AnalogLike):
     def __init__(self, slot):
@@ -150,27 +158,28 @@ class Potentiometer(AnalogLike):
     def __init__(self, slot):
         super().__init__(slot)
 
-def SoundSensor(slot, analog=False):
-    return AnalogLike(slot) if analog else ButtonLike(slot)
+class SoundSensor(SoundSensorPlus):
+     def __init__(self, slot):
+        _, sda, scl = get_slot_pins(slot)
+        super().__init__(sda, scl)
 
 class Joystick(JoystickPlus):
     def __init__(self, slot):
         _, sda, scl = get_slot_pins(slot, joystick=True)
         super().__init__(pinX=sda, pinY=scl)
 
-
-import machine 
-_BASE_PWM = machine.PWM
-class PWM(_BASE_PWM):    
-    """
-    Set duty_cycle of PWM object in range from 0 to 1. 
-    """
+class PWM(PWMPlus):
     def __init__(self, slot):
         _, sda, _ = get_slot_pins(slot)
         super().__init__(sda)
 
-    def duty(self, duty_cycle):
-        if duty_cycle < 0 or duty_cycle > 1: 
-            raise ValueError("duty_cycle must be in range from 0 to 1")
-        return self.duty_u16(int(duty_cycle * 65536))
 
+# Aliases 
+Climate = ClimateSensor
+Color = ColorSensor
+Distance = DistanceSensor
+Touch = TouchSensor
+Motion = MotionSensor
+Light = LightSensor
+Pot = Potentiometer
+Sound = SoundSensor
