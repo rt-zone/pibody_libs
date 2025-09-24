@@ -1,12 +1,13 @@
 {
-  "pibody.py": "50e94ab22a7989afac5aed6ca59f09f71b44359e25618e3ceb193c3a6b6f25be",
+  "pibody.py": "05be0cfd6a5351cb277ff1be4a6d3b702ba7564f2b72f060e95923339ef57ab9",
   "libs/DisplayPlus.py": "9030f7c9c684a7b9ba340a53affc626ebd0ee54a9f7105103ec68f1461ba85a3",
   "libs/iot/WiFi.py": "96c7436b8567d5924b303cb26c0649d8ebda60ccc036c0673fde5ab52f93b1b6",
   "libs/iot/telegram_bot.py": "3bd6c9685feb544c907a3f3dd5d7493c8055e65dc3c22d30fed45fc98e24b5e5",
+  "libs/general/SoundSensorPlus.py": "842da5723d7d4620864f8fda91a1618bb2c069a98aaffec4c91c6a75b72c092f",
   "libs/general/PWMPlus.py": "e12f28fdd35ef9b9f51b7a30d4c4f9b4102d0f5ccda2902cd6a8b88d664ea618",
   "libs/general/RotaryEncoder.py": "bb78ef2da48bc8b95614bfd92d2fb9acbe499c66f16760eead670e63818c58d4",
   "libs/general/NeoPixelPlus.py": "f1b6791c8833c44c93315a0ef33d9be18a51e45d68b46e692b6b6b575f911e15",
   "libs/general/BuzzerPlus.py": "89942be6f1d185ee910a7010fa97795aa9fd8924b8c6b6906669461e4b98bbe0",
-  "libs/general/JoystickPlus.py": "235e60dad67e2d0f9e3e770b89e8a68999a0e440832660a9c0ea4a252e8dc5f1",
+  "libs/general/JoystickPlus.py": "2c0ec1ee2b14883919cb532d396d19b29e54c1926216ef60d66624f91f629b17",
   "libs/general/ServoPlus.py": "b9b40638fdfd2b6e3b243bf3018d859ddf74905cf660047ef35e4bba31d02f5b"
 }
