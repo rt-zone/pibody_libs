@@ -12,6 +12,7 @@ from libs.general.NeoPixelPlus import NeoPixelPlus
 from libs.general.BuzzerPlus import BuzzerPlus
 from libs.general.ServoPlus import ServoPlus
 from libs.general.JoystickPlus import JoystickPlus
+from libs.general.SoundSensorPlus import SoundSensorPlus
 from libs.general.PWMPlus import PWMPlus
 from libs.DisplayPlus import DisplayPlus
 from libs.iot.WiFi import WiFi
@@ -157,8 +158,10 @@ class Potentiometer(AnalogLike):
     def __init__(self, slot):
         super().__init__(slot)
 
-def SoundSensor(slot, analog=False):
-    return AnalogLike(slot) if analog else ButtonLike(slot)
+class SoundSensor(SoundSensorPlus):
+     def __init__(self, slot):
+        _, sda, scl = get_slot_pins(slot)
+        super().__init__(sda, scl)
 
 class Joystick(JoystickPlus):
     def __init__(self, slot):
