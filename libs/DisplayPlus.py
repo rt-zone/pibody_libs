@@ -38,16 +38,15 @@ class DisplayPlus(st7789.ST7789):
         self.width = 240
         self.height = 320
         self.line_height = 16
+        self.line_width = 8
         self.max_lines = self.height // self.line_height
+        self.max_chars = self.width // self.line_width
         self.lines = []
+
+        self.vssa = 320
+        self.current_line = 0
     
-    def text(self, text, x, y, font=None, fg=None, bg=None):
-        if font is None:
-            font = self.font_small
-        if fg is None:
-            fg = st7789.WHITE
-        if bg is None:
-            bg = st7789.BLACK
+    def text(self, text, x, y, font=font_small, fg=st7789.WHITE, bg=st7789.BLACK):
         super().text(font, text, x, y, fg, bg)
 
     def color(self, r, g, b):
@@ -61,7 +60,17 @@ class DisplayPlus(st7789.ST7789):
                 dy = center_y + r * math.sin(math.pi/180*i)
                 self.display.pixel(round(dx), round(dy), color)
 
-    def linear_bar(self, x, y, length, value, min_value, max_value, height=5, border=False, color=st7789.GREEN, border_color=st7789.WHITE, background_color=st7789.BLACK):
+    def linear_bar(
+            self, x, y, 
+            length, 
+            value, 
+            min_value,
+            max_value, 
+            height=5, 
+            border=False, 
+            color=st7789.GREEN, 
+            border_color=st7789.WHITE, 
+            background_color=st7789.BLACK):
         even = 1 - height % 2
         n = int((height-1-even)/2)
         
@@ -126,33 +135,21 @@ class DisplayPlus(st7789.ST7789):
         self.text("Education", x - r, y + r + 32, font=font_bold, fg=st7789.BLACK, bg=st7789.WHITE)
         self.text("artisan.education", 100, 300, fg=st7789.BLACK, bg=st7789.WHITE)
 
-    def print(self, text, x=10, max_width=None, font_width=8):
-        if max_width is None:
-            max_width = self.width
-        text = "> " + str(text)
-        words = text.split(' ')
-        line = ''
-        for word in words:
-            if len(line + ' ' + word) * font_width > max_width and line:
-                self._add_line(line)
-                line = word
-            else:
-                if line:
-                    line += ' ' + word
-                else:
-                    line = word
-        if line:
-            self._add_line(line)
-        self._redraw(x)
+    def _print_line(self, msg):
+        self.vssa = (self.vssa - self.line_height) % self.height
+        self.vscsad(self.vssa)
 
-    def _add_line(self, line):
-        self.lines.append(line)
-        if len(self.lines) > self.max_lines:
-            self.lines.pop(0)  # Удаляем верхнюю строку
+        # Now draw text at the new "bottom line"
+        y = (self.current_line * self.line_height) % self.height
+        self.fill_rect(0, y, 240, self.line_height, 0)  # clear line (black background)
+        self.text(msg, 0, y)
 
-    def _redraw(self, x):
-        self.display.fill(0)
-        y = 0
-        for line in self.lines:
-            self.display.text(line, x, y)
-            y += self.line_height
+        self.current_line += 1
+        if self.current_line >= self.max_lines:
+            self.current_line = 0
+
+    def print(self, msg):
+        message_lines = [msg[i:i+self.max_chars] for i in range(0, len(msg),self.max_chars)]
+        self._print_line(f">> {message_lines[0]}")
+        for line in message_lines[1:]:
+            self._print_line(line)

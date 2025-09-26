@@ -1,5 +1,5 @@
 from machine import Pin, ADC, I2C, SoftI2C
-
+# TODO: Refactor this file, use Aliases, store helper functions and slot maps in separate file, reference these files from Plus.py files, make pibody.py smaller.
 from BME280 import BME280
 from MPU6050 import MPU6050
 from LSM6DS3 import LSM6DS3
@@ -8,13 +8,14 @@ from VL53L0X import VL53L0X
 from SSD1306 import SSD1306
 
 from libs.general.RotaryEncoder import RotaryEncoder
-from libs.general.NeoPixelPlus import NeoPixelPlus
 from libs.general.BuzzerPlus import BuzzerPlus
 from libs.general.ServoPlus import ServoPlus
 from libs.general.JoystickPlus import JoystickPlus
 from libs.general.SoundSensorPlus import SoundSensorPlus
 from libs.general.PWMPlus import PWMPlus
 from libs.DisplayPlus import DisplayPlus
+
+from libs.general.NeoPixelPlus import LEDTower
 from libs.iot.WiFi import WiFi
 from libs.iot.telegram_bot import TelegramBot
 
@@ -62,7 +63,7 @@ class ClimateSensor(BME280):
         super().__init__(get_i2c(slot, hard_i2c))
 
 
-def GyroAxel(slot, hard_i2c=False):
+def GyroAccel(slot, hard_i2c=False):
     i2c = get_i2c(slot, hard_i2c)
     if 0x68 in i2c.scan():
         return MPU6050(i2c)
@@ -89,9 +90,6 @@ class Display(DisplayPlus):
     def __init__(self):
         super().__init__()
 
-class LEDTower(NeoPixelPlus):
-    def __init__(self, pin=8, led_num=8):
-        super().__init__(pin=pin, led_num=led_num)
 
 # general modules
 class Encoder(RotaryEncoder):
@@ -126,21 +124,11 @@ class ButtonLike(Pin):
         """
         return super().value()
     
-class Button(ButtonLike):
-    def __init__(self, slot):
-        super().__init__(slot)
+Button = ButtonLike
+Switch = ButtonLike
+TouchSensor = ButtonLike
+MotionSensor = ButtonLike
 
-class Switch(ButtonLike):
-    def __init__(self, slot):
-        super().__init__(slot)
-
-class TouchSensor(ButtonLike):
-    def __init__(self, slot):
-        super().__init__(slot)
-
-class MotionSensor(ButtonLike):
-    def __init__(self, slot):
-        super().__init__(slot)
 
 class AnalogLike(ADC):
     def __init__(self, slot):
@@ -152,14 +140,9 @@ class AnalogLike(ADC):
             Returns value of sensor from 0 to 1
         """
         return self.read_u16() / 65536
-
-class LightSensor(AnalogLike):
-    def __init__(self, slot):
-        super().__init__(slot)
-
-class Potentiometer(AnalogLike):
-    def __init__(self, slot):
-        super().__init__(slot)
+    
+LightSensor = AnalogLike
+Potentiometer = AnalogLike
 
 class SoundSensor(SoundSensorPlus):
      def __init__(self, slot):
@@ -186,3 +169,5 @@ Motion = MotionSensor
 Light = LightSensor
 Pot = Potentiometer
 Sound = SoundSensor
+
+display = Display()
