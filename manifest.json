@@ -1,13 +1,17 @@
 {
-  "pibody.py": "b55df3f3183e34bf80ba89aa095832464fa0e1b5b15aa00718ae201bd57886e5",
-  "libs/DisplayPlus.py": "7e64e9abd43a145cd2fbd654308a80a91ab3c49a5a6aabb010f4cb35b87b1aa7",
+  "pibody.py": "821ed53d93732902d04afc0ac3216b76e03e5f5ea53c619defbd28f794e12016",
+  "libs/Display.py": "7a3605ac759c8f577fca5d5a89919c5cc6dafd4563c09242410dedacddbfd931",
+  "libs/helper.py": "23d2c0173a9f53c6099a4e5ffbd27efa7be16ac6dc868d6628571dadef2b82cf",
+  "libs/wrappers/modules.py": "3bac14f82c55391c0562e58d0ae74a79123d76507ff2694da6ce0cd8448a0d16",
+  "libs/wrappers/i2c.py": "65cf1c6be621a2ea6415b98cc4c83a90ea3748df3e84b76375e465e31a78784f",
+  "libs/wrappers/generic.py": "2c9b68846b2b9ccbb7bac5a802b990d44c9b8ea0eb4df0ee6d503da7461959fe",
   "libs/iot/WiFi.py": "96c7436b8567d5924b303cb26c0649d8ebda60ccc036c0673fde5ab52f93b1b6",
   "libs/iot/telegram_bot.py": "3bd6c9685feb544c907a3f3dd5d7493c8055e65dc3c22d30fed45fc98e24b5e5",
-  "libs/general/RotaryEncoder.py": "2123c7de261d8f18b634d8f65ba692bf0a86120bd98aabda44e71ec246cee8c4",
-  "libs/general/ServoPlus.py": "b9b40638fdfd2b6e3b243bf3018d859ddf74905cf660047ef35e4bba31d02f5b",
-  "libs/general/BuzzerPlus.py": "89942be6f1d185ee910a7010fa97795aa9fd8924b8c6b6906669461e4b98bbe0",
-  "libs/general/SoundSensorPlus.py": "842da5723d7d4620864f8fda91a1618bb2c069a98aaffec4c91c6a75b72c092f",
-  "libs/general/JoystickPlus.py": "2c0ec1ee2b14883919cb532d396d19b29e54c1926216ef60d66624f91f629b17",
-  "libs/general/NeoPixelPlus.py": "d2ba789d35240af3b0db3beea72e13020a2e5ce3b6a62d263ce593cab114cae8",
-  "libs/general/PWMPlus.py": "e12f28fdd35ef9b9f51b7a30d4c4f9b4102d0f5ccda2902cd6a8b88d664ea618"
+  "libs/modules/PWM.py": "dfb07742e67c425a47ecb614ad18f2970c7273a78858c088113c66432b5f153e",
+  "libs/modules/RotaryEncoder.py": "2123c7de261d8f18b634d8f65ba692bf0a86120bd98aabda44e71ec246cee8c4",
+  "libs/modules/SoundSensor.py": "b836051d8b01cf6353b0858628381a97f982167a0f8bbaa37e49352a2f588c6b",
+  "libs/modules/Joystick.py": "a7e4f215227f4ca122b2481a3ddeecbdf4f9a8afbf402258978d99d5b0903466",
+  "libs/modules/LEDTower.py": "d2ba789d35240af3b0db3beea72e13020a2e5ce3b6a62d263ce593cab114cae8",
+  "libs/modules/Buzzer.py": "46cb7e44850ba050ed230cedf08e4fc30ba29fc42772edd1ed046ab3badf0581",
+  "libs/modules/Servo.py": "1a99adc6ea94ac667fa397b4a381bbadabb539daeaf14b12d6ca91b1b27e2ef1"
 }
