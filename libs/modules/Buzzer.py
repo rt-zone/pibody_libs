@@ -1,11 +1,11 @@
-from libs.general.PWMPlus import PWMPlus
+from libs.modules.PWM import PWM
 from math import e
 from time import sleep
 
 def volume2duty(volume):
     return (volume ** e / 2)
 
-class BuzzerPlus(PWMPlus):
+class Buzzer(PWM):
     def __init__(self, pin):
         super().__init__(pin)
         self._volume = 0.5

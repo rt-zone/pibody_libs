@@ -6,7 +6,7 @@ import vga2_16x32 as font_big
 import vga2_bold_16x32 as font_bold 
 import math
 
-class DisplayPlus(st7789.ST7789):
+class Display(st7789.ST7789):
     def __init__(self, rotation=2, options=0, buffer_size=0):
         super().__init__(SPI(1, baudrate=400_000_000, sck=Pin(10), mosi=Pin(11)),
             240,
@@ -149,7 +149,28 @@ class DisplayPlus(st7789.ST7789):
             self.current_line = 0
 
     def print(self, msg):
-        message_lines = [msg[i:i+self.max_chars] for i in range(0, len(msg),self.max_chars)]
-        self._print_line(f">> {message_lines[0]}")
-        for line in message_lines[1:]:
+        if type(msg) == dict:
+            text = ""
+            for k, v in msg.items():
+                text += f"{k} : {v}\n" 
+            msg = text        
+        elif type(msg) != str:
+            msg = str(msg)
+        
+        msg = ">> " + msg
+        message_lines = []
+        buffer = ""
+        for char in msg:
+            if char == '\n':
+                message_lines.append(buffer)
+                buffer = ""
+            else:
+                buffer += char
+            if len(buffer) == self.max_chars:
+                message_lines.append(buffer)
+                buffer = ""
+        if buffer:
+            message_lines.append(buffer)
+
+        for line in message_lines:
             self._print_line(line)

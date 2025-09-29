@@ -1,13 +1,14 @@
-import machine 
-_BASE_PWM = machine.PWM
+from machine import PWM as _BASE_PWM
+from machine import Pin
+
 
 def u16_to_float(u16 : int):
     return u16 / 65536
 
-class PWMPlus(_BASE_PWM):    
+class PWM(_BASE_PWM):    
    
-    def __init__(self, pin):
-        super().__init__(machine.Pin(pin))
+    def __init__(self, pin:int):        
+        super().__init__(Pin(pin))
         self._duty = u16_to_float(self.duty_u16())
 
 
