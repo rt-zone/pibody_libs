@@ -1,5 +1,30 @@
-import network, time, socket, struct
+import network, time, socket, struct, urequests
 NTP_HOST = 'pool.ntp.org'
+
+WEEKDAYS = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+]
+
+MONTHS = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+]
 
 class WiFi:
     def __init__(self, ssid: str, password: str, timeout: int = 10):
@@ -38,7 +63,7 @@ class WiFi:
     def ip(self):
         return self.wlan.ifconfig()[0] if self.is_connected() else None
     
-    def get_time(self, gmt=5):
+    def get_time(self, gmt=5, formatted=False):
         NTP_DELTA = 2208988800
         NTP_QUERY = bytearray(48)
         NTP_QUERY[0] = 0x1B
@@ -52,5 +77,78 @@ class WiFi:
         finally:
             s.close()
         ntp_time = struct.unpack("!I", msg[40:44])[0]
-        return time.gmtime(ntp_time - NTP_DELTA + gmt_offset)
+        result = time.gmtime(ntp_time - NTP_DELTA + gmt_offset)
+        if formatted:
+            return f"{MONTHS[result[1]-1]} {result[2]}, {result[0]} {WEEKDAYS[result[6]]} {result[3]:02}:{result[4]:02}:{result[5]:02}"
+        else:
+            return result 
 
+    def get_currency(self, from_currency="USD", to_currency="KZT"):
+        """
+        Convert an amount from one currency to another using live exchange rates.
+
+        Args:
+            from_currency (str): Source currency code (e.g., "USD").
+            to_currency (str): Target currency code (e.g., "KZT").
+
+        Returns:
+            float: Converted amount in target currency, or None if request fails.
+        """
+        try:
+            url = f"https://open.er-api.com/v6/latest/{from_currency}"
+            r = urequests.get(url)
+            data = r.json()
+            r.close()
+            return float(data["rates"][to_currency])
+        except Exception as e:
+            print("Error converting currency:", e)
+            return None
+
+    def get_weather(self, city="Astana", country="Kazakhstan"):
+        """
+        Fetch current weather data for the given city and country.
+        Defaults to Astana, Kazakhstan.
+
+        Args:
+            city (str): City name (default: "Astana")
+            country (str): Country name (default: "Kazakhstan")
+
+        Returns:
+            dict: Weather data including temperature, description, humidity.
+        """
+        try:
+            # Open-Meteo is free and doesn’t require an API key
+            url = f"https://geocoding-api.open-meteo.com/v1/search?name={city}&count=1&language=en&format=json"
+            r = urequests.get(url)
+            geo = r.json()
+            r.close()
+            lat = geo["results"][0]["latitude"]
+            lon = geo["results"][0]["longitude"]
+
+            url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true"
+            r = urequests.get(url)
+            data = r.json()
+            r.close()
+
+            temp = data["current_weather"]["temperature"]
+            return f"{temp} C"
+        except Exception as e:
+            print("Error fetching weather:", e)
+            return None
+
+    def get_ip_info(self):
+        """
+        Fetch public IP address and location info.
+
+        Returns:
+            dict: Dictionary with IP, city, region, country.
+        """
+        try:
+            url = "http://ip-api.com/json"
+            r = urequests.get(url)
+            data = r.json()
+            r.close()
+            return data
+        except Exception as e:
+            print("Error fetching IP info:", e)
+            return None

@@ -1,8 +1,7 @@
 from libs.wrappers.generic import LED, ButtonLike, AnalogLike
 from libs.wrappers.i2c import ClimateSensor, ColorSensor, DistanceSensor, GyroAccel
-from libs.wrappers.modules import Buzzer, PWM, Joystick, Encoder, SoundSensor
+from libs.wrappers.modules import Buzzer, PWM, Joystick, Encoder, SoundSensor, LEDTower
 from libs.modules.Servo import Servo
-from libs.modules.LEDTower import LEDTower
 
 from libs.Display import Display
 
