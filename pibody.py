@@ -1,5 +1,5 @@
-from libs.wrappers.generic import LED, ButtonLike, AnalogLike
-from libs.wrappers.i2c import ClimateSensor, ColorSensor, DistanceSensor, GyroAccel
+from libs.wrappers.generic import LED, ButtonLike, ADC
+from libs.wrappers.i2c import ClimateSensor, ColorSensor, DistanceSensor, GyroAccel, OLED
 from libs.wrappers.modules import Buzzer, PWM, Joystick, Encoder, SoundSensor, LEDTower
 from libs.modules.Servo import Servo
 
@@ -18,8 +18,8 @@ Switch = ButtonLike
 TouchSensor = ButtonLike
 MotionSensor = ButtonLike
 # Analog Likes
-LightSensor = AnalogLike
-Potentiometer = AnalogLike
+LightSensor = ADC
+Potentiometer = ADC
 # Sensors
 Climate = ClimateSensor
 Color = ColorSensor

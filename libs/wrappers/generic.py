@@ -1,4 +1,5 @@
-from machine import Pin, ADC
+from machine import Pin
+from machine import ADC as _ADC
 from libs.helper import get_pins_by_slot
 
 class LED(Pin):
@@ -15,7 +16,7 @@ class ButtonLike(Pin):
         """Returns value of sensor: 0 or 1"""
         return super().value()
     
-class AnalogLike(ADC):
+class ADC(_ADC):
     def __init__(self, slot):
         _, sda, _ = get_pins_by_slot(slot, adc=True)
         super().__init__(Pin(sda))
