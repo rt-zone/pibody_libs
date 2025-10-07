@@ -9,6 +9,7 @@ class Buzzer(PWM):
     def __init__(self, pin):
         super().__init__(pin)
         self._volume = 0.5
+        self.freq(560)
 
     def volume(self, volume=None):
         if volume is None:
