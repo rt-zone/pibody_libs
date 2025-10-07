@@ -148,14 +148,11 @@ class Display(st7789.ST7789):
         if self.current_line >= self.max_lines:
             self.current_line = 0
 
-    def print(self, msg):
-        if type(msg) == dict:
-            text = ""
-            for k, v in msg.items():
-                text += f"{k} : {v}\n" 
-            msg = text        
-        elif type(msg) != str:
-            msg = str(msg)
+    def print(self, *args):
+        msg = ""    
+        for arg in args:
+            msg += str(arg) + " "
+        msg = msg.strip()
         
         msg = ">> " + msg
         message_lines = []
