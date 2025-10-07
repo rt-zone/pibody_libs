@@ -12,6 +12,6 @@
   "libs/modules/SoundSensor.py": "b836051d8b01cf6353b0858628381a97f982167a0f8bbaa37e49352a2f588c6b",
   "libs/modules/Joystick.py": "a7e4f215227f4ca122b2481a3ddeecbdf4f9a8afbf402258978d99d5b0903466",
   "libs/modules/LEDTower.py": "d2ba789d35240af3b0db3beea72e13020a2e5ce3b6a62d263ce593cab114cae8",
-  "libs/modules/Buzzer.py": "46cb7e44850ba050ed230cedf08e4fc30ba29fc42772edd1ed046ab3badf0581",
+  "libs/modules/Buzzer.py": "2242aca94e59aef012ca32e6d30c936a028ccef77dde94120f559495bca046d9",
   "libs/modules/Servo.py": "1a99adc6ea94ac667fa397b4a381bbadabb539daeaf14b12d6ca91b1b27e2ef1"
 }
