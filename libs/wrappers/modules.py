@@ -27,6 +27,9 @@ class Encoder(RotaryEncoder):
     def __init__(self, slot):
         _, sda, scl = get_pins_by_slot(slot)
         super().__init__(clk=sda, dt=scl)
+    
+    def read(self):
+        return self.value()
 
 class SoundSensor(_SoundSensor):
     def __init__(self, slot):
