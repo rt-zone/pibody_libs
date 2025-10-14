@@ -1,16 +1,16 @@
 from machine import Pin
 from machine import ADC as _ADC
-from libs.helper import get_pins_by_slot
+from libs.helper import get_pin
 
 class LED(Pin):
     def __init__(self, slot):
-        _, sda, _ = get_pins_by_slot(slot)
-        super().__init__(sda, Pin.OUT)
+        pin = get_pin(slot)
+        super().__init__(pin, Pin.OUT)
     
 class ButtonLike(Pin):
     def __init__(self, slot):
-        _, sda, _ = get_pins_by_slot(slot)
-        super().__init__(sda, Pin.IN)
+        pin = get_pin(slot)
+        super().__init__(pin, Pin.IN)
 
     def read(self):
         """Returns value of sensor: 0 or 1"""
@@ -18,10 +18,10 @@ class ButtonLike(Pin):
     
 class ADC(_ADC):
     def __init__(self, slot):
-        _, sda, _ = get_pins_by_slot(slot, adc=True)
-        super().__init__(Pin(sda))
+        pin = get_pin(slot)
+        super().__init__(Pin(pin))
     
     def read(self):
         """Returns value of sensor from 0 to 1"""
-        return self.read_u16() / 65536
+        return self.read_u16() / 65535
     

@@ -13,9 +13,9 @@ from SSD1306 import SSD1306
 def get_i2c(slot, hard_i2c=False):
     if type(slot) == I2C or type(slot) == SoftI2C:
         return slot
-    bus, sda, scl = get_pins_by_slot(slot)
+    sda, scl = get_pins_by_slot(slot)
     if hard_i2c:
-        return I2C(bus, scl=Pin(scl), sda=Pin(sda))
+        return I2C(scl=Pin(scl), sda=Pin(sda))
     else:
         return SoftI2C(scl=Pin(scl), sda=Pin(sda))
 

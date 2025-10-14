@@ -17,9 +17,11 @@ Button = ButtonLike
 Switch = ButtonLike
 TouchSensor = ButtonLike
 MotionSensor = ButtonLike
+
 # Analog Likes
 LightSensor = ADC
 Potentiometer = ADC
+
 # Sensors
 Climate = ClimateSensor
 Color = ColorSensor
@@ -29,4 +31,7 @@ Motion = MotionSensor
 Light = LightSensor
 Pot = Potentiometer
 Sound = SoundSensor
+
+#Other
+GyroAxel = GyroAccel
 
