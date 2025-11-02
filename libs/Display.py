@@ -1,6 +1,7 @@
 from machine import Pin, SPI
 import st7789
-import vga2_8x16 as font_small
+import vga2_8x16 as font_tiny
+import vga2_10x20 as font_small
 import vga2_12x24 as font_medium
 import vga2_16x32 as font_big
 import vga2_bold_16x32 as font_bold 
@@ -20,6 +21,7 @@ class Display(st7789.ST7789):
         self.display = self
         self.display.init()
 
+        self.font_tiny = font_tiny
         self.font_small = font_small
         self.font_medium = font_medium
         self.font_big = font_big
