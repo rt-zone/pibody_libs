@@ -8,7 +8,11 @@ from libs.Display import Display
 from libs.iot.WiFi import WiFi
 from libs.iot.telegram_bot import TelegramBot
 
-display = Display()
+try:
+    display = Display()
+except Exception as e:
+    print(f"Display not found")
+    display = None
 
 # Aliases 
 

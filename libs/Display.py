@@ -1,7 +1,7 @@
 from machine import Pin, SPI
 import st7789
 import vga2_8x16 as font_small
-import vga2_16x16 as font_medium
+import vga2_12x24 as font_medium
 import vga2_16x32 as font_big
 import vga2_bold_16x32 as font_bold 
 import math
@@ -25,6 +25,8 @@ class Display(st7789.ST7789):
         self.font_big = font_big
         self.font_bold = font_bold
         
+
+        
         self.BLACK = st7789.BLACK
         self.BLUE = st7789.BLUE
         self.RED = st7789.RED
@@ -34,17 +36,24 @@ class Display(st7789.ST7789):
         self.YELLOW = st7789.YELLOW
         self.WHITE = st7789.WHITE
         
-        self.y = 10
         self.width = 240
         self.height = 320
-        self.line_height = 16
-        self.line_width = 8
-        self.max_lines = self.height // self.line_height
-        self.max_chars = self.width // self.line_width
+
+        
+
         self.lines = []
 
         self.vssa = 320
         self.current_line = 0
+
+        self.set_font(self.font_medium)
+
+    def set_font(self, font):
+        self.font = font
+        self.line_height = font.HEIGHT
+        self.line_width = font.WIDTH
+        self.max_lines = self.height // self.line_height
+        self.max_chars = self.width // self.line_width
     
     def text(self, text, x, y, font=font_small, fg=st7789.WHITE, bg=st7789.BLACK):
         super().text(font, text, x, y, fg, bg)
@@ -136,13 +145,14 @@ class Display(st7789.ST7789):
         self.text("artisan.education", 100, 300, fg=st7789.BLACK, bg=st7789.WHITE)
 
     def _print_line(self, msg):
+        
         self.vssa = (self.vssa - self.line_height) % self.height
         self.vscsad(self.vssa)
 
         # Now draw text at the new "bottom line"
         y = (self.current_line * self.line_height) % self.height
         self.fill_rect(0, y, 240, self.line_height, 0)  # clear line (black background)
-        self.text(msg, 0, y)
+        self.text(msg, 0, y, font=self.font)
 
         self.current_line += 1
         if self.current_line >= self.max_lines:

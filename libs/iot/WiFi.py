@@ -109,14 +109,13 @@ class WiFi:
             print("Error converting currency:", e)
             return None
 
-    def get_weather(self, city="Astana", country="Kazakhstan"):
+    def get_temperature(self, city="Astana"):
         """
-        Fetch current weather data for the given city and country.
-        Defaults to Astana, Kazakhstan.
+        Fetch current weather data for the given city.
+        Defaults to Astana.
 
         Args:
             city (str): City name (default: "Astana")
-            country (str): Country name (default: "Kazakhstan")
 
         Returns:
             dict: Weather data including temperature, description, humidity.
