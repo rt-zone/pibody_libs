@@ -43,10 +43,10 @@ class Display(st7789.ST7789):
 
         self.lines = []
 
-        self.vssa = 320
+        self.set_font(self.font_medium)
+        
         self.current_line = 0
 
-        self.set_font(self.font_medium)
 
     def set_font(self, font):
         self.font = font
@@ -54,6 +54,7 @@ class Display(st7789.ST7789):
         self.line_width = font.WIDTH
         self.max_lines = self.height // self.line_height
         self.max_chars = self.width // self.line_width
+        self.vssa = 320
     
     def text(self, text, x, y, font=font_small, fg=st7789.WHITE, bg=st7789.BLACK):
         super().text(font, text, x, y, fg, bg)
@@ -146,12 +147,13 @@ class Display(st7789.ST7789):
 
     def _print_line(self, msg):
         
+        if self.vssa - self.line_height < 0:
+            self.vssa = 320
         self.vssa = (self.vssa - self.line_height) % self.height
         self.vscsad(self.vssa)
 
-        # Now draw text at the new "bottom line"
         y = (self.current_line * self.line_height) % self.height
-        self.fill_rect(0, y, 240, self.line_height, 0)  # clear line (black background)
+        self.fill_rect(0, y, 240, self.line_height, 0)  
         self.text(msg, 0, y, font=self.font)
 
         self.current_line += 1
