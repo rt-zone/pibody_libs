@@ -1,7 +1,7 @@
 {
   "pibody/Display.py": "be0c977f0e1ec7db7e3e1ba2d4d3be8688a117dd2f9bdbcb142c4f481956d167",
   "pibody/helper.py": "769278a93d43be0cbd5c3cd31006f3e4f3923587edf71451cfcaedef2990fa3a",
-  "pibody/__init__.py": "2c09274d100e73b4d57fb9acb999854ebdd4ea36e879e0663d8a882cf68a3f70",
+  "pibody/__init__.py": "353cf00319ec0b57ee5baf70fb3ace58a400b206737535873c5b286c6f333b37",
   "pibody/Demo/module.py": "a266c1a0d25dd0a7aebd79171c76afe3ad37576a501c1db4c2a10616f1e0160e",
   "pibody/Demo/main.py": "05d19fff9b973f0c68ef796dd4e9d471d4746e0f2a92f9bb268719115250177a",
   "pibody/Demo/tester.py": "aa762edecb77ddcef4fabf90c9350dff606521bbc43011a55c68c8ffb6114a5e",
@@ -35,7 +35,7 @@
   "pibody/wrappers/modules.py": "2e45fca6d8c93bd8d9bceb4051ddeb24a7a58b624145ba83d86268b78721ba33",
   "pibody/wrappers/i2c.py": "532732095c9d77e94c404dc20a341249a6771bba6af4e81b0c4eb5843e695734",
   "pibody/wrappers/generic.py": "83767cf17e9aa369aabb843863f0f4c1764e48057be6e0b187a6e9b1113cc909",
-  "pibody/iot/WiFi.py": "29f39cbce7ad5aa470f91a1318e57b2362d9035aa03afc180855e1de9a8503ae",
+  "pibody/iot/WiFi.py": "408b4f902dda7084665d6c65fb62949c9eb23ed77d9a46394c71a17668c9c219",
   "pibody/iot/telegram_bot.py": "4a4780fdc7a5dd65be119e412a5982dea5fac8f5a711f029914f3d9e10e6040b",
   "pibody/modules/PWM.py": "dfb07742e67c425a47ecb614ad18f2970c7273a78858c088113c66432b5f153e",
   "pibody/modules/RotaryEncoder.py": "2123c7de261d8f18b634d8f65ba692bf0a86120bd98aabda44e71ec246cee8c4",
