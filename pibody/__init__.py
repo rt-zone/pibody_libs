@@ -8,11 +8,14 @@ from .iot.telegram_bot import TelegramBot
 
 from .Display import Display
 
+
 try:
     display = Display()
 except Exception as e:
     print(f"Display not found")
     display = None
+
+from .Demo.main import Demo
 
 # Aliases 
 
@@ -38,4 +41,5 @@ Sound = SoundSensor
 
 #Other
 GyroAxel = GyroAccel
-
+# Demo
+demo = Demo()

@@ -3,8 +3,6 @@
 *.code-workspace
 __pycache__
 *.pyc
-Demo
 test.py
 demo.py
-main.py
 tmp.py
