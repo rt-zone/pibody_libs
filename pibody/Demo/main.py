@@ -45,6 +45,7 @@ class Demo():
             print("No tester selected")
         
     def run(self):
+        print("Demo started")
         display.draw_logo(y=90)
         display.fill_rect(100, 300, 140, 20, display.WHITE)
         display.fill_polygon(
