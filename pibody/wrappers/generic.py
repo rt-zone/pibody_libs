@@ -1,6 +1,6 @@
 from machine import Pin
 from machine import ADC as _ADC
-from libs.helper import get_pin
+from pibody.helper import get_pin
 
 class LED(Pin):
     def __init__(self, slot):

@@ -1,4 +1,4 @@
-from libs.modules.PWM import PWM
+from .PWM import PWM
 from math import e
 from time import sleep
 

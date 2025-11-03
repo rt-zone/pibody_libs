@@ -1,12 +1,12 @@
-from libs.wrappers.generic import LED, ButtonLike, ADC
-from libs.wrappers.i2c import ClimateSensor, ColorSensor, DistanceSensor, GyroAccel, OLED
-from libs.wrappers.modules import Buzzer, PWM, Joystick, Encoder, SoundSensor, LEDTower
-from libs.modules.Servo import Servo
+from .wrappers.generic import LED, ButtonLike, ADC
+from .wrappers.i2c import ClimateSensor, ColorSensor, DistanceSensor, GyroAccel, OLED
+from .wrappers.modules import Buzzer, PWM, Joystick, Encoder, SoundSensor, LEDTower
+from .modules.Servo import Servo
 
-from libs.Display import Display
+from .iot.WiFi import WiFi
+from .iot.telegram_bot import TelegramBot
 
-from libs.iot.WiFi import WiFi
-from libs.iot.telegram_bot import TelegramBot
+from .Display import Display
 
 try:
     display = Display()

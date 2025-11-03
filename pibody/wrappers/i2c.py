@@ -1,5 +1,5 @@
 from machine import I2C, SoftI2C, Pin
-from libs.helper import get_pins_by_slot
+from pibody.helper import get_pins_by_slot
 
 from BME280 import BME280
 from MPU6050 import MPU6050
