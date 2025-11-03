@@ -3,8 +3,8 @@ from .wrappers.i2c import ClimateSensor, ColorSensor, DistanceSensor, GyroAccel,
 from .wrappers.modules import Buzzer, PWM, Joystick, Encoder, SoundSensor, LEDTower
 from .modules.Servo import Servo
 
-from .iot.WiFi import WiFi
-from .iot.telegram_bot import TelegramBot
+# from .iot.WiFi import WiFi
+# from .iot.telegram_bot import TelegramBot
 
 from .Display import Display
 
