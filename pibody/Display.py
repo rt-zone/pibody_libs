@@ -3,7 +3,7 @@ import st7789
 import vga2_8x16 as font_small
 import vga2_10x20 as font_medium
 import vga2_12x24 as font_large
-import vga2_bold_16x32 as font_bold 
+import vga2_16x32 as font_bold 
 import math
 
 class Display(st7789.ST7789):
