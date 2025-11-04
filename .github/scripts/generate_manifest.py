@@ -17,8 +17,8 @@ IGNORE_PATTERNS = [
     "__pycache__/*",
     "*.log",
     "*.tmp",
-    "README.md",
     "main.py",
+    "README.md",
     OUTPUT_FILE  # ignore the manifest file itself
 ]
 
