@@ -86,4 +86,5 @@ class Demo():
                         self.start_selected_tester()
                     except Exception as e:
                         print("Error occurred: ", e)
+                        self.hinter.show_error(str(e))
 
