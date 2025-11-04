@@ -1,11 +1,11 @@
-from pibody.modules.Buzzer import Buzzer as _Buzzer
-from pibody.modules.PWM import PWM as _PWM
-from pibody.modules.Joystick import Joystick as _Joystick
-from pibody.modules.SoundSensor import SoundSensor as _SoundSensor
-from pibody.modules.LEDTower import LEDTower as _LEDTower
-from pibody.modules.RotaryEncoder import RotaryEncoder
+from ..modules.Buzzer import Buzzer as _Buzzer
+from ..modules.PWM import PWM as _PWM
+from ..modules.Joystick import Joystick as _Joystick
+from ..modules.SoundSensor import SoundSensor as _SoundSensor
+from ..modules.LEDTower import LEDTower as _LEDTower
+from ..modules.RotaryEncoder import RotaryEncoder
 
-from pibody.helper import get_pin, get_pins_by_slot
+from ..helper import get_pin, get_pins_by_slot
 
 
 class Buzzer(_Buzzer):

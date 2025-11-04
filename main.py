@@ -1,2 +1,2 @@
-from pibody import demo 
+from pibody import demo
 demo.run()

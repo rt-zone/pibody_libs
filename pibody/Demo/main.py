@@ -7,6 +7,7 @@ from .hinter import Hinter
 from .tester import Tester
 from machine import Pin
 from pibody import display
+import gc 
 start_button = Pin(20, Pin.IN) 
 select_button = Pin(21, Pin.IN)
 
@@ -80,8 +81,9 @@ class Demo():
                 self.select_tester(self.testers[self.tester_index])
                 while select_button.value() == 1: pass
             if start_button.value() == 1:
-                try:
-                    self.start_selected_tester()
-                except Exception as e:
-                    print(f"Error starting tester: {e}")
-                    self.hinter.show_error(str(e))
+                    gc.collect()
+                    try:
+                        self.start_selected_tester()
+                    except Exception as e:
+                        print("Error occurred: ", e)
+

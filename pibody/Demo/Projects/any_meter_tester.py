@@ -12,11 +12,11 @@ hinter = Hinter()
 project_config = ProjectConfig(
     title="Any Meter",
     modules=[
-        Module(Module.TOUCH_SENSOR, 'D'),
-        Module(Module.SOUND_SENSOR, 'C'),
+        Module(Module.CLIMATE_SENSOR, "A"),
         Module(Module.COLOR_SENSOR, 'B'),
-        Module(Module.DISTANCE_SENSOR, 'E'),
-        Module(Module.CLIMATE_SENSOR, "A")
+        Module(Module.SOUND_SENSOR, 'C'),
+        Module(Module.TOUCH_SENSOR, 'D'),
+        Module(Module.DISTANCE_SENSOR, 'E')
     ],
     led_tower=True
 )

@@ -5,6 +5,7 @@ from ..module import Module
 from ..projectConfig import ProjectConfig
 from ..tester import Tester
 from ..hinter import Hinter
+import gc
 
 hinter = Hinter()
 
@@ -14,9 +15,9 @@ project_config = ProjectConfig(
         Module(Module.BUTTON_BLUE, "A"),
         Module(Module.BUTTON_YELLOW, "B"),
         Module(Module.POTENTIOMETER, "C"),
-        Module(Module.TOUCH_SENSOR, "F"),
+        Module(Module.ENCODER, "D"),
         Module(Module.SWITCH, "E"),
-        Module(Module.ENCODER, "D")
+        Module(Module.TOUCH_SENSOR, "F")
     ],
     led_tower=True
 )

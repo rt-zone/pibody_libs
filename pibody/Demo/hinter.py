@@ -1,6 +1,8 @@
 from pibody import display
 from pibody.Demo.module import Module
 from pibody.Demo.projectConfig import ProjectConfig
+import gc
+import time
 
 
 SLOTS_COORDS = {
@@ -13,6 +15,20 @@ SLOTS_COORDS = {
 }
 
 png_path = "pibody/Demo/module_pngs/"
+
+def safe_draw_png(path, x, y, retries=10, delay=0.1):
+    for attempt in range(retries):
+        try:
+            gc.collect()  # clean memory before each try
+            display.png(path, x, y)
+            return True  # success
+        except MemoryError:
+            print("MemoryError — retrying ({}/{})...".format(attempt + 1, retries))
+            gc.collect()
+            time.sleep(delay)
+    print("Failed to draw PNG after {} retries.".format(retries))
+    return False
+
     
 class Hinter():
     def __init__(self):
@@ -31,8 +47,7 @@ class Hinter():
 
     def drawModule(self, module :Module, slot):
         x, y = SLOTS_COORDS[slot]
-        display.rect(x, y, 110, 110, display.BLACK)
-        display.png(module.getPngPath(), x, y)
+        safe_draw_png(module.getPngPath(), x, y)
 
     def drawModules(self, config: ProjectConfig):
         title = config.getTitle()

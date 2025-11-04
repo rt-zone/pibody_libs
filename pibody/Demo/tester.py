@@ -35,12 +35,13 @@ class Tester():
         self.isRunning = True
         while self.isRunning:
             self.loop()
+            gc.collect()
 
     def stop(self):
         self.led_tower = None
         self.servo = None
         self.servo9 = None
-
+        self = None
         gc.collect()
 
     def cancel_handler(self, pin):
