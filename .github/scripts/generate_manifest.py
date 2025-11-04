@@ -18,7 +18,6 @@ IGNORE_PATTERNS = [
     "*.log",
     "*.tmp",
     "README.md",
-    "main.py",
     OUTPUT_FILE  # ignore the manifest file itself
 ]
 
