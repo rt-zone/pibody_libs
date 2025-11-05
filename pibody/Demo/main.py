@@ -8,7 +8,6 @@ from .tester import Tester
 from machine import Pin
 from pibody import display
 import gc 
-import time
 start_button = Pin(20, Pin.IN) 
 select_button = Pin(21, Pin.IN)
 
