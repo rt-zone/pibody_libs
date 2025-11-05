@@ -7,7 +7,20 @@ import vga2_16x32 as font_bold
 import math
 
 class Display(st7789.ST7789):
+    # Singleton instance
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(Display, cls).__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
     def __init__(self, rotation=2, options=0, buffer_size=0):
+        if self._initialized:
+            return
+        self._initialized = True
+        print("Display initialized")
         super().__init__(SPI(1, baudrate=400_000_000, sck=Pin(10), mosi=Pin(11)),
             240,
             320,
@@ -25,7 +38,6 @@ class Display(st7789.ST7789):
         self.font_large = font_large
         self.font_bold = font_bold
         
-
         
         self.BLACK = st7789.BLACK
         self.BLUE = st7789.BLUE
@@ -43,18 +55,17 @@ class Display(st7789.ST7789):
 
         self.lines = []
 
-        self.set_font(self.font_medium)
         
         self.current_line = 0
 
+        self.vssa = 320 
 
-    def set_font(self, font):
+    def set_font_config(self, font):
         self.font = font
         self.line_height = font.HEIGHT
         self.line_width = font.WIDTH
         self.max_lines = self.height // self.line_height
         self.max_chars = self.width // self.line_width
-        self.vssa = 320
     
     def text(self, text, x, y, font=font_small, fg=st7789.WHITE, bg=st7789.BLACK):
         super().text(font, text, x, y, fg, bg)
@@ -144,9 +155,8 @@ class Display(st7789.ST7789):
         self.text("Artisan", x - r, y + r, font=font_bold, fg=st7789.BLACK, bg=st7789.WHITE)
         self.text("Education", x - r, y + r + 32, font=font_bold, fg=st7789.BLACK, bg=st7789.WHITE)
         self.text("artisan.education", 100, 300, fg=st7789.BLACK, bg=st7789.WHITE)
-
-    def _print_line(self, msg):
-        
+    
+    def _print_line(self, msg, font):    
         if self.vssa - self.line_height < 0:
             self.vssa = 320
         self.vssa = (self.vssa - self.line_height) % self.height
@@ -154,19 +164,21 @@ class Display(st7789.ST7789):
 
         y = (self.current_line * self.line_height) % self.height
         self.fill_rect(0, y, 240, self.line_height, 0)  
-        self.text(msg, 0, y, font=self.font)
-
+        self.text(msg, 0, y, font=font)
+        
+        
         self.current_line += 1
         if self.current_line >= self.max_lines:
             self.current_line = 0
 
-    def print(self, *args):
-        msg = ""    
+
+    def print(self, *args, font=font_medium):
+        self.set_font_config(font)
+        msg = ">> "    
         for arg in args:
             msg += str(arg) + " "
         msg = msg.strip()
         
-        msg = ">> " + msg
         message_lines = []
         buffer = ""
         for char in msg:
@@ -182,4 +194,6 @@ class Display(st7789.ST7789):
             message_lines.append(buffer)
 
         for line in message_lines:
-            self._print_line(line)
+            self._print_line(line, font)
+
+display = Display()

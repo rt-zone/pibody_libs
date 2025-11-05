@@ -11,6 +11,7 @@ import gc
 start_button = Pin(20, Pin.IN) 
 select_button = Pin(21, Pin.IN)
 
+
 class Demo():
     def __init__(self):
         self.hinter = Hinter()
@@ -86,4 +87,3 @@ class Demo():
                     except Exception as e:
                         print("Error occurred: ", e)
                         self.hinter.show_error(str(e))
-

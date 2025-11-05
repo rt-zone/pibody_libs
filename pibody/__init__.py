@@ -6,16 +6,11 @@ from .modules.Servo import Servo
 from .iot.WiFi import WiFi
 from .iot.telegram_bot import TelegramBot
 
-from .Display import Display
+from .Display import display
+from .Demo import demo
 
 
-try:
-    display = Display()
-except Exception as e:
-    print(f"Display not found")
-    display = None
-
-from .Demo.main import Demo
+# Demo
 
 # Aliases 
 
@@ -41,5 +36,4 @@ Sound = SoundSensor
 
 #Other
 GyroAxel = GyroAccel
-# Demo
-demo = Demo()
+
