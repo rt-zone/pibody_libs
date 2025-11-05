@@ -60,7 +60,6 @@ class Display(st7789.ST7789):
         super().text(font, text, x, y, fg, bg)
 
     def color(self, r, g, b):
-        print(f"color is {r}, {g}, {b}")
         return st7789.color565(r, g, b)
 
     def draw_circle(self, color, center_x, center_y, r, width=1, start_angle=0, end_angle=360):
