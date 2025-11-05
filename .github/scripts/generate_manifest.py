@@ -48,9 +48,9 @@ def generate_manifest(base_dir):
     return manifest
 
 if __name__ == "__main__":
-    pibody_dir = os.path.join(BASE_DIR, "pibody") 
+    # pibody_dir = os.path.join(BASE_DIR, "pibody") 
     manifest_data = generate_manifest(BASE_DIR)
-    with open(os.path.join(pibody_dir, OUTPUT_FILE), 'w') as f:
+    with open(os.path.join(BASE_DIR, OUTPUT_FILE), 'w') as f:
         json.dump(manifest_data, f, indent=2)
     print(f"Manifest written to {OUTPUT_FILE}")
 
