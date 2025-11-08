@@ -2,7 +2,7 @@ def __getattr__(name):
     if name == "LED":
         from .wrappers.generic import LED
         return LED
-    if name in ("Button", "Switch", "TouchSensor", "MotionSensor"):
+    if name in ("Button", "Switch", "TouchSensor", "MotionSensor", "Touch", "Motion"):
         from .wrappers.generic import ButtonLike
         return ButtonLike
     if name in ("ADC", "LightSensor", "Potentiometer", "Pot", "Light"):
