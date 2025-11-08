@@ -35,23 +35,26 @@ class Demo():
         
     def cancel_handler(self, pin):
         self.selected_tester.cancel_handler(pin)
-        # self.hinter.drawModules(self.selected_tester.config)
         pin.irq(handler=None)  # Disable the cancel handler
 
     def start_selected_tester(self):
-        gc.collect()
-        if self.selected_tester is not None:
-            self.hinter.tester_is_running(self.selected_tester.name)
-            select_button.irq(trigger=Pin.IRQ_RISING, handler=self.cancel_handler) 
-            self.selected_tester.start()
-        else:
+        if self.selected_tester is None:
             print("No tester selected")
+            return
         
+        gc.collect()
+        self.hinter.tester_is_running(self.selected_tester.name)
+        select_button.irq(trigger=Pin.IRQ_RISING, handler=self.cancel_handler) 
+        try:
+            self.selected_tester.start()
+        except Exception as e:
+            print("Error occurred: ", e)
+            self.hinter.show_error(str(e))
 
     def draw_startup(self):
         display.draw_logo(y=90)
         display.fill_rect(100, 300, 140, 20, display.WHITE)
-        arrow_polygon_nodes = [(10, 285) ,(10, 310), (35, 310), (27, 302), (43, 286), (34, 277), (18, 293), (10, 285)],
+        arrow_polygon_nodes = [(10, 285) ,(10, 310), (35, 310), (27, 302), (43, 286), (34, 277), (18, 293), (10, 285)]
             
         display.fill_polygon(arrow_polygon_nodes, 0, 0, display.BLACK)
         display.fill_polygon(arrow_polygon_nodes, -80, 320, display.BLACK,4.71238898038)
@@ -73,6 +76,7 @@ class Demo():
 
         while select_button.value() == 0 and start_button.value() == 0:
             pass
+
         self.select_tester(self.selected_tester)
 
         while True:
@@ -80,8 +84,5 @@ class Demo():
                 self.rotate_tester()
                 
             if start_button.value() == 1:
-                try:
-                    self.start_selected_tester()
-                except Exception as e:
-                    print("Error occurred: ", e)
-                    self.hinter.show_error(str(e))
+                self.start_selected_tester()
+                
