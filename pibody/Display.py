@@ -7,7 +7,20 @@ import vga2_16x32 as font_bold
 import math
 
 class Display(st7789.ST7789):
+    # Singleton instance
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(Display, cls).__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
     def __init__(self, rotation=2, options=0, buffer_size=0):
+        if self._initialized:
+            return
+        self._initialized = True
+        print("Display initialized")
         super().__init__(SPI(1, baudrate=400_000_000, sck=Pin(10), mosi=Pin(11)),
             240,
             320,
@@ -25,7 +38,6 @@ class Display(st7789.ST7789):
         self.font_large = font_large
         self.font_bold = font_bold
         
-
         
         self.BLACK = st7789.BLACK
         self.BLUE = st7789.BLUE
@@ -39,22 +51,12 @@ class Display(st7789.ST7789):
         self.width = 240
         self.height = 320
 
-        
-
         self.lines = []
 
-        self.set_font(self.font_medium)
-        
         self.current_line = 0
 
+        self.vssa = 320 
 
-    def set_font(self, font):
-        self.font = font
-        self.line_height = font.HEIGHT
-        self.line_width = font.WIDTH
-        self.max_lines = self.height // self.line_height
-        self.max_chars = self.width // self.line_width
-        self.vssa = 320
     
     def text(self, text, x, y, font=font_small, fg=st7789.WHITE, bg=st7789.BLACK):
         super().text(font, text, x, y, fg, bg)
@@ -110,7 +112,7 @@ class Display(st7789.ST7789):
         self.draw_circle(background_color, center_x, center_y, r, width=width, start_angle=int(angle)-90, end_angle=270)
         self.draw_circle(color, center_x, center_y, r, width=width, start_angle=-90, end_angle=int(angle)-90)
 
-    def draw_poligon(self, center_x, center_y, r, n, bump=1.0, angle_offset=None, color=st7789.WHITE, fill=False):
+    def draw_polygon(self, center_x, center_y, r, n, bump=1.0, angle_offset=None, color=st7789.WHITE, fill=False):
         buf = []
         angle = 0
         angle_step = 360 / n
@@ -139,47 +141,46 @@ class Display(st7789.ST7789):
 
     def draw_logo(self, x=120, y=100, r=80):
         super().fill(st7789.WHITE)
-        self.draw_poligon(x, y, r, 8, bump=0.7, fill=True, color=st7789.BLACK)
-        self.draw_poligon(x, y, r * 0.7, 4, bump=0.3, fill=True, color=st7789.WHITE, angle_offset=0)
+        self.draw_polygon(x, y, r, 8, bump=0.7, fill=True, color=st7789.BLACK)
+        self.draw_polygon(x, y, r * 0.7, 4, bump=0.3, fill=True, color=st7789.WHITE, angle_offset=0)
         self.text("Artisan", x - r, y + r, font=font_bold, fg=st7789.BLACK, bg=st7789.WHITE)
         self.text("Education", x - r, y + r + 32, font=font_bold, fg=st7789.BLACK, bg=st7789.WHITE)
         self.text("artisan.education", 100, 300, fg=st7789.BLACK, bg=st7789.WHITE)
+    
 
-    def _print_line(self, msg):
+
+    def print(self, *args, font=font_medium):
+        max_chars = self.width // font.WIDTH
+        msg = (">> " + " ".join(str(a) for a in args))
         
-        if self.vssa - self.line_height < 0:
+        line = ""
+        for char in msg:
+            if char == '\n' or len(line) >= max_chars:
+                self._print_line(line, font)
+                line = "" if char == '\n' else char
+            else:
+                line += char
+            
+        if line:
+            self._print_line(line, font)
+
+    
+    def _print_line(self, msg, font):
+        max_lines = self.height // font.HEIGHT
+        line_height = font.HEIGHT
+        if self.vssa - line_height < 0:
             self.vssa = 320
-        self.vssa = (self.vssa - self.line_height) % self.height
+        self.vssa = (self.vssa - line_height) % self.height
         self.vscsad(self.vssa)
 
-        y = (self.current_line * self.line_height) % self.height
-        self.fill_rect(0, y, 240, self.line_height, 0)  
-        self.text(msg, 0, y, font=self.font)
-
+        y = (self.current_line * line_height) % self.height
+        self.fill_rect(0, y, 240, line_height, 0)  
+        self.text(msg, 0, y, font=font)
+        
+        
         self.current_line += 1
-        if self.current_line >= self.max_lines:
+        if self.current_line >= max_lines:
             self.current_line = 0
 
-    def print(self, *args):
-        msg = ""    
-        for arg in args:
-            msg += str(arg) + " "
-        msg = msg.strip()
-        
-        msg = ">> " + msg
-        message_lines = []
-        buffer = ""
-        for char in msg:
-            if char == '\n':
-                message_lines.append(buffer)
-                buffer = ""
-            else:
-                buffer += char
-            if len(buffer) == self.max_chars:
-                message_lines.append(buffer)
-                buffer = ""
-        if buffer:
-            message_lines.append(buffer)
 
-        for line in message_lines:
-            self._print_line(line)
+display = Display()

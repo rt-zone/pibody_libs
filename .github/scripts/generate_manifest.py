@@ -3,7 +3,7 @@ import hashlib
 import json
 import fnmatch
 
-BASE_DIR = "."  # scan root of the repo
+BASE_DIR = os.path.join(".", "pibody") # scan pibody in the root of the repo
 OUTPUT_FILE = "manifest.json"
 
 # Patterns or folders to ignore
