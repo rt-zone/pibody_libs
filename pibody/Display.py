@@ -166,21 +166,15 @@ class Display(st7789.ST7789):
 
     
     def _print_line(self, msg, font):
-        max_lines = self.height // font.HEIGHT
         line_height = font.HEIGHT
-        if self.vssa - line_height < 0:
-            self.vssa = 320
-        self.vssa = (self.vssa - line_height) % self.height
+        self.vssa -= line_height
+        if self.vssa < 0:
+            self.vssa = self.height - line_height
         self.vscsad(self.vssa)
-
-        y = (self.current_line * line_height) % self.height
+        y = self.height - line_height - self.vssa
         self.fill_rect(0, y, 240, line_height, 0)  
         self.text(msg, 0, y, font=font)
         
-        
-        self.current_line += 1
-        if self.current_line >= max_lines:
-            self.current_line = 0
-
+    
 
 display = Display()
