@@ -1,2 +1,6 @@
-from pibody import demo
-demo.run()
+from pibody import Encoder
+
+enc = Encoder("D")
+
+while True:
+    print(enc.value())

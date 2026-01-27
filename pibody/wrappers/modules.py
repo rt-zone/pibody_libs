@@ -3,7 +3,7 @@ from ..modules.PWM import PWM as _PWM
 from ..modules.Joystick import Joystick as _Joystick
 from ..modules.SoundSensor import SoundSensor as _SoundSensor
 from ..modules.LEDTower import LEDTower as _LEDTower
-from ..modules.RotaryEncoder import RotaryEncoder
+from RotaryEncoder import RotaryEncoder
 
 from ..helper import get_pin, get_pins_by_slot
 
