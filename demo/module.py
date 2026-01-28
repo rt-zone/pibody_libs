@@ -1,5 +1,7 @@
 from machine import Pin, I2C, SoftI2C, PWM, ADC
-png_path = "pibody/Demo/module_pngs/"
+from micropython import const
+
+PNG_PATH = const("demo/module_pngs/")
 
 
 SLOT_MAP = {
@@ -68,7 +70,8 @@ class Module():
         return self.scl if self.scl is not None else None
 
     def getPngPath(self):
-        return f"{png_path}{self.name}.png"
+        path = f"{PNG_PATH}{self.name}.png"
+        return f"{PNG_PATH}{self.name}.png"
     
     def __str__(self):
         return self.name

@@ -1,9 +1,8 @@
 from pibody import display
-from pibody.Demo.module import Module
-from pibody.Demo.projectConfig import ProjectConfig
+from .module import Module, PNG_PATH
+from .projectConfig import ProjectConfig
 import gc
 import time
-
 
 SLOTS_COORDS = {
     "A": (10, 0),
@@ -14,7 +13,6 @@ SLOTS_COORDS = {
     "F": (150, 180)
 }
 
-png_path = "pibody/Demo/module_pngs/"
 
 def safe_draw_png(path, x, y, retries=10, delay=0.1):
     for attempt in range(retries):
@@ -72,9 +70,9 @@ class Hinter():
         display.text("GP21", 204, 300, display.font_small, fg=display.CYAN)
         display.text("next", 170, 300, display.font_small)
         if led_tower:
-            display.png(f"{png_path}led_tower.png", 110, 0)
+            display.png(f"{PNG_PATH}led_tower.png", 110, 0)
         if servo8 or servo9:
-            display.png(f"{png_path}servo.png", 90, 200)
+            display.png(f"{PNG_PATH}servo.png", 90, 200)
             txt = "8" if servo8 else ""
             txt += "/" if servo8 and servo9 else ""
             txt += "9" if servo9 else ""

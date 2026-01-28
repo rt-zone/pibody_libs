@@ -3,7 +3,7 @@ from ..tester import Tester
 from ..hinter import Hinter
 from ..projectConfig import ProjectConfig
 from machine import Pin
-from pibody import ClimateSensor, ColorSensor, DistanceSensor, Display
+from pibody import ClimateSensor, ColorSensor, DistanceSensor
 import time
 from pibody import display
 
