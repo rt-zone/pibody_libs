@@ -5,6 +5,10 @@ import vga2_10x20 as font_medium
 import vga2_12x24 as font_large
 import vga2_16x32 as font_bold 
 import math
+from micropython import const
+
+_DISPLAY_BUF_SIZE = const(80 * 80 * 2)
+
 
 class Display(st7789.ST7789):
     # Singleton instance
@@ -16,22 +20,20 @@ class Display(st7789.ST7789):
             cls._instance._initialized = False
         return cls._instance
 
-    def __init__(self, rotation=2, options=0, buffer_size=0):
+    def __init__(self):
         if self._initialized:
             return
         self._initialized = True
-        print("Display initialized")
         super().__init__(SPI(1, baudrate=400_000_000, sck=Pin(10), mosi=Pin(11)),
             240,
             320,
             reset=Pin(13, Pin.OUT),
             cs=Pin(15, Pin.OUT),
             dc=Pin(14, Pin.OUT),
-            rotation=rotation,
-            options=options,
-            buffer_size=buffer_size)
-        self.display = self
-        self.display.init()
+            rotation=2,
+            options=0,
+            buffer_size=_DISPLAY_BUF_SIZE)
+        super().init()
 
         self.font_small = font_small
         self.font_medium = font_medium
@@ -70,7 +72,7 @@ class Display(st7789.ST7789):
             for i in range(start_angle, end_angle):
                 dx = center_x + r * math.cos(math.pi/180*i)
                 dy = center_y + r * math.sin(math.pi/180*i)
-                self.display.pixel(round(dx), round(dy), color)
+                super().pixel(round(dx), round(dy), color)
 
     def linear_bar(
             self, x, y, 
@@ -182,5 +184,7 @@ class Display(st7789.ST7789):
         if self.current_line >= max_lines:
             self.current_line = 0
 
+    def clear(self):
+        super().fill(ST7789.BLACK)
 
 display = Display()
