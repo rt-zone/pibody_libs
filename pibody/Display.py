@@ -51,8 +51,6 @@ class Display(st7789.ST7789):
         self.width = 240
         self.height = 320
 
-        self.lines = []
-
         self.current_line = 0
 
         self.vssa = 320 
@@ -148,7 +146,6 @@ class Display(st7789.ST7789):
         self.text("artisan.education", 100, 300, fg=st7789.BLACK, bg=st7789.WHITE)
     
 
-
     def print(self, *args, font=font_medium):
         max_chars = self.width // font.WIDTH
         msg = (">> " + " ".join(str(a) for a in args))
@@ -177,10 +174,14 @@ class Display(st7789.ST7789):
         self.fill_rect(0, y, 240, line_height, 0)  
         self.text(msg, 0, y, font=font)
         
-        
+
         self.current_line += 1
         if self.current_line >= max_lines:
             self.current_line = 0
 
+    def clear(self):
+        self.fill(st7789.BLACK)
+        self.current_line = 0
+        self.vssa = 320
 
 display = Display()
