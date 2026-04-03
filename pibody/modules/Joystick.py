@@ -1,5 +1,5 @@
 from machine import ADC, Pin
-
+# TODO: Change ADC to pibody's ADC
 class Joystick():
     def __init__(self, pinX, pinY):
             self.X = ADC(Pin(pinX))

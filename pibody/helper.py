@@ -1,5 +1,4 @@
 from machine import I2C, SoftI2C, Pin
-
 _SLOT_MAP = {
     'A': (0, 1),
     'B': (2, 3),

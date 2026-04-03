@@ -7,29 +7,14 @@ def LED(slot):
     return Pin(pin, Pin.OUT)
     
 def Button(slot):
-    from machine import Pin
-    class RuntimePin(Pin):
-        def __init__(self, slot):
-            pin = resolve_pins(slot)[0]
-            super().__init__(pin, Pin.IN)
-
-        def read(self):
-            """Returns value of sensor: 0 or 1"""
-            return super().value()
-    
-    return RuntimePin(slot)
+    from .modules.Button import Button as _Button
+    pin = resolve_pins(slot)[0]
+    return _Button(pin)
         
 def ADC(slot):
-    from machine import ADC as _ADC
-    class RuntimeADC(_ADC):
-        def __init__(self, slot):
-            pin = resolve_pins(slot)[0]
-            super().__init__(Pin(pin))
-        
-        def read(self):
-            """Returns value of sensor from 0 to 1"""
-            return self.read_u16() / 65535
-    return RuntimeADC(slot)    
+    from .modules.ADC import ADC as _ADC
+    pin = resolve_pins(slot)[0]
+    return _ADC(pin)
 
 
 def ClimateSensor(slot, hard_i2c=False):
@@ -39,10 +24,11 @@ def ClimateSensor(slot, hard_i2c=False):
 
 def GyroAccel(slot, hard_i2c=False):
     i2c = get_i2c(slot, hard_i2c)
-    if 0x68 in i2c.scan():
+    i2c_address = i2c.scan()
+    if 0x68 in i2c_address:
         from MPU6050 import MPU6050
         return MPU6050(i2c)
-    if 0x6A in i2c.scan():
+    if 0x6A in i2c_address:
         from LSM6DS3 import LSM6DS3
         return LSM6DS3(i2c)
     
@@ -86,15 +72,17 @@ def Encoder(slot : str | tuple):
 
 def SoundSensor(slot : str | tuple):
     from .modules.SoundSensor import SoundSensor as _SoundSensor
-    _SoundSensor(*resolve_pins(slot))
+    return _SoundSensor(*resolve_pins(slot))
 
 def WiFi():
-    from .iot.WiFi import WiFi
+    from .modules.WiFi import WiFi
     return WiFi()
 
 def TelegramBot(token):
-    from .iot.TelegramBot import TelegramBot as TGB
+    from .modules.TelegramBot import TelegramBot as TGB
     return TGB(token)
+
+
 
 # Button Likes
 Switch = Button

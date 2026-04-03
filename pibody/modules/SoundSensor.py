@@ -1,5 +1,5 @@
 from machine import Pin, ADC
-
+# TODO: Change ADC to pibody's ADC
 adc_pins = [26, 27, 28]
 
 class SoundSensor():
