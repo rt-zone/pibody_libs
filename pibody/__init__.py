@@ -1,5 +1,6 @@
 from pibody.helper import resolve_pins, get_i2c
 
+# TODO: Make modules agnostic of each other and pibody's implementation details as if they could have been stand-alone libraries
 
 def LED(slot):
     from machine import Pin
@@ -7,12 +8,12 @@ def LED(slot):
     return Pin(pin, Pin.OUT)
     
 def Button(slot):
-    from .modules.Button import Button as _Button
+    from machine import Pin
     pin = resolve_pins(slot)[0]
-    return _Button(pin)
+    return Pin(pin, Pin.IN)
         
 def ADC(slot):
-    from .modules.ADC import ADC as _ADC
+    from machine import ADC as _ADC
     pin = resolve_pins(slot)[0]
     return _ADC(pin)
 
@@ -51,7 +52,7 @@ def Buzzer(slot):
     return _Buzzer(resolve_pins(slot)[0])
 
 def PWM(slot):
-    from .modules.PWM import PWM as _PWM
+    from machine import PWM as _PWM
     return _PWM(resolve_pins(slot)[0])
 
 def LEDTower(slot = 8):
