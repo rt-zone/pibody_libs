@@ -1,27 +1,20 @@
 from pibody.helper import resolve_pins, get_i2c
 
-# TODO: Make modules agnostic of each other and pibody's implementation details as if they could have been stand-alone libraries
-
 def LED(slot):
     from machine import Pin
-    pin = resolve_pins(slot)[0]
-    return Pin(pin, Pin.OUT)
+    return Pin(resolve_pins(slot)[0], Pin.OUT)
     
 def Button(slot):
     from machine import Pin
-    pin = resolve_pins(slot)[0]
-    return Pin(pin, Pin.IN)
+    return Pin(resolve_pins(slot)[0], Pin.IN)
         
 def ADC(slot):
     from machine import ADC as _ADC
-    pin = resolve_pins(slot)[0]
-    return _ADC(pin)
+    return _ADC(resolve_pins(slot)[0])
 
-
-def ClimateSensor(slot, hard_i2c=False):
-    from BME280 import BME280
-    return BME280(get_i2c(slot, hard_i2c))
-    
+def PWM(slot):
+    from machine import PWM as _PWM
+    return _PWM(resolve_pins(slot)[0])
 
 def GyroAccel(slot, hard_i2c=False):
     i2c = get_i2c(slot, hard_i2c)
@@ -35,6 +28,11 @@ def GyroAccel(slot, hard_i2c=False):
     
     raise ValueError(f"Invalid i2c address '{i2c.scan()}' for slot '{slot}'")  
 
+def ClimateSensor(slot, hard_i2c=False):
+    from BME280 import BME280
+    return BME280(get_i2c(slot, hard_i2c))
+    
+
 def ColorSensor(slot, hard_i2c=False):
     from VEML6040 import VEML6040
     return VEML6040(get_i2c(slot, hard_i2c))
@@ -47,17 +45,18 @@ def OLED(slot, hard_i2c=False):
     from SSD1306 import SSD1306
     return SSD1306(get_i2c(slot, hard_i2c), width=128, height=64)
 
+def LEDTower(slot = 8):
+    from NeoPixelExt import NeoPixel
+    return NeoPixel(resolve_pins(slot)[0])
+
+def Encoder(slot : str | tuple):
+    from RotaryEncoder import RotaryEncoder
+    return RotaryEncoder(*resolve_pins(slot))
+
 def Buzzer(slot):
     from .modules.Buzzer import Buzzer as _Buzzer
     return _Buzzer(resolve_pins(slot)[0])
 
-def PWM(slot):
-    from machine import PWM as _PWM
-    return _PWM(resolve_pins(slot)[0])
-
-def LEDTower(slot = 8):
-    from .modules.LEDTower import LEDTower as _LEDTower
-    return _LEDTower(resolve_pins(slot)[0])
 
 def Servo(slot : str | tuple):
     from .modules.Servo import Servo
@@ -67,9 +66,6 @@ def Joystick(slot : str | tuple):
     from .modules.Joystick import Joystick as _Joystick
     return _Joystick(*resolve_pins(slot))
 
-def Encoder(slot : str | tuple):
-    from RotaryEncoder import RotaryEncoder
-    return RotaryEncoder(*resolve_pins(slot))
 
 def SoundSensor(slot : str | tuple):
     from .modules.SoundSensor import SoundSensor as _SoundSensor

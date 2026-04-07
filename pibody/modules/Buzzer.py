@@ -1,30 +1,47 @@
-from .PWM import PWM
+from machine import PWM, Timer
 from math import e
-from time import sleep
 
-def volume2duty(volume):
-    return (volume ** e / 2)
+class OneShotTimer:
+    
+    is_available = True
+
+    def __init__(self, period, callback):
+        if not OneShotTimer.is_available:
+            return
+        OneShotTimer.is_available = False
+        self._callback = callback
+        self._timer = Timer()
+        self._timer.init(
+            mode=Timer.ONE_SHOT,
+            period=int(period * 1000),
+            callback=self._isr
+        )
+
+    def _isr(self, t):
+        self._callback()
+        self._timer.deinit()
+        OneShotTimer.is_available = True
 
 class Buzzer(PWM):
-    def __init__(self, pin):
+    def __init__(self, pin, volume=0.5, freq=560):
         super().__init__(pin)
-        self._volume = 0.5
-        self.freq(560)
+        self._volume = volume
+        self.freq(freq)
 
     def volume(self, volume=None):
         if volume is None:
             return self._volume
-        if not 0 <= volume <= 1.0:
-            raise ValueError("Volume must be between 0 and 1.0")
-        self._volume = volume
-        duty = volume ** e
-        self.duty(duty / 2)
+        self._volume = self._set_duty_by_volume(volume)
+    
 
     def make_sound(self, freq, volume, duration):
+        """Duration in seconds, non-blocking"""
         self.freq(freq)
-        self.duty(volume2duty(volume))
-        sleep(duration)
-        self.duty(0)
+        self._set_duty_by_volume(volume)
+        OneShotTimer(
+            period=duration,
+            callback=lambda t: self.duty_u16(0)
+        )
 
     def beep(self):
         self.make_sound(1000, self._volume, 0.1)
@@ -37,3 +54,9 @@ class Buzzer(PWM):
 
     def off(self):
         self.duty(0)
+
+    def _set_duty_by_volume(self, volume):
+        volume = max(0, volume)
+        volume = min(1, volume)
+        self.duty((volume ** e) / 2)
+        return volume
