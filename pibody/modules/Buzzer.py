@@ -18,30 +18,46 @@ class OneShotTimer:
         )
 
     def _isr(self, t):
-        self._callback()
         self._timer.deinit()
         OneShotTimer.is_available = True
+        self._callback()
 
 class Buzzer(PWM):
     def __init__(self, pin, volume=0.5, freq=560):
         super().__init__(pin)
         self._volume = volume
         self.freq(freq)
+        self._is_playing = False
+        self._queue = []
 
     def volume(self, volume=None):
         if volume is None:
             return self._volume
-        self._volume = self._set_duty_by_volume(volume)
+        self._volume = _set_duty_by_volume(volume)
     
 
     def make_sound(self, freq, volume, duration):
-        """Duration in seconds, non-blocking"""
+        self._queue.append((freq, volume, duration))
+        if not self._is_playing:
+            self._play_next()
+
+
+    def _play_next(self):
+        if not self._queue:
+            return
+        freq, volume, duration = self._queue.pop(0)
+        self._is_playing = True
         self.freq(freq)
         self._set_duty_by_volume(volume)
         OneShotTimer(
             period=duration,
-            callback=lambda t: self.duty_u16(0)
+            callback=self._on_timer
         )
+
+    def _on_timer(self):
+        self.duty_u16(0)
+        self._is_playing = False
+        self._play_next()  
 
     def beep(self):
         self.make_sound(1000, self._volume, 0.1)
