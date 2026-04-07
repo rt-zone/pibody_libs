@@ -5,7 +5,7 @@
   "modules/Servo.py": "1a99adc6ea94ac667fa397b4a381bbadabb539daeaf14b12d6ca91b1b27e2ef1",
   "modules/WiFi.py": "408b4f902dda7084665d6c65fb62949c9eb23ed77d9a46394c71a17668c9c219",
   "modules/TelegramBot.py": "6b48338c6f8bb9d07e1692e8938a4cd521e277644e9827d19a853dd205e03e97",
-  "modules/Buzzer.py": "746ed23a8b683dd482a7aa26d78cff6873dfd728298bfa77d1b7436e416acb1f",
+  "modules/Buzzer.py": "158ca3d6d2e84b2e7f6598bb8fbe2811a0a71391340d6cb023a5610b73fda232",
   "modules/Joystick.py": "96a689362113154b8bb6c44ec6de1d1199d58f8caff210501332d7715506e26b",
   "modules/Display.py": "7c993d36de223ece3ab5fc7046d38e9affc45dbdac73632a6e18dfa71e8924d0"
 }
