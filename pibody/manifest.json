@@ -1,12 +1,11 @@
 {
-  "__init__.py": "090c4de88183abcd22d0680902789d1971b1193c1b9d120190c5a7142dc394b1",
+  "__init__.py": "43912ee6a8be81bdaa20607ea42a2535a11c5cbfbbe3fb1d80b91e5d8f77ce45",
   "helper.py": "3f27271d79b039340a2ed38c58d0771fb9d2270890203fccbad71f606d384fcf",
   "modules/SoundSensor.py": "17cd8d5a8bd19a667485b04bb753da718c7b9f3837f7c2e3ac06d05fa16a9f62",
   "modules/Servo.py": "1a99adc6ea94ac667fa397b4a381bbadabb539daeaf14b12d6ca91b1b27e2ef1",
   "modules/WiFi.py": "408b4f902dda7084665d6c65fb62949c9eb23ed77d9a46394c71a17668c9c219",
-  "modules/LEDTower.py": "6cbcd2952375aa82119a835d584994eac91819548d69935c26125120728bd66d",
   "modules/TelegramBot.py": "6b48338c6f8bb9d07e1692e8938a4cd521e277644e9827d19a853dd205e03e97",
-  "modules/Buzzer.py": "76c801f2605b7a1948f98f837ccde800011fdac78809b78432b99968ae863e7c",
+  "modules/Buzzer.py": "746ed23a8b683dd482a7aa26d78cff6873dfd728298bfa77d1b7436e416acb1f",
   "modules/Joystick.py": "96a689362113154b8bb6c44ec6de1d1199d58f8caff210501332d7715506e26b",
   "modules/Display.py": "7c993d36de223ece3ab5fc7046d38e9affc45dbdac73632a6e18dfa71e8924d0"
 }
