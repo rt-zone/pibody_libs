@@ -1,19 +1,33 @@
 from Extensions.ADCExt import ADC 
-# TODO: Allow ports other than "F" but call warnings
+from machine import Pin
+
+MODULE_NAME = "Joystick"
+
 class Joystick():
     def __init__(self, pinX, pinY):
-            self.X = ADC(pinX)
-            self.Y = ADC(pinY)
+        self.X = None
+        self.Y = None 
+
+        if pinX is not None:
+            try:
+                self.X = ADC(Pin(pinX))
+            except Exception as e:
+                print(f"[{MODULE_NAME}] Failed to init X axis on pin {pinX}: {e}")
+        if pinY is not None:
+            try:
+                self.Y = ADC(Pin(pinY))
+            except Exception as e:
+                print(f"[{MODULE_NAME}] Failed to init Y axis on pin {pinY}: {e}")
 
     def read(self):
-        """Returns value of Joystick for X and Y axis. Value range: from 0 to 1."""
         return (self.read_x(), self.read_y())
     
     def read_x(self):
-         """Returns x-axis position value of joystick. Value range: from 0 to 1"""
-         return self.X.read()
-    
-    
+        if self.X is None:
+            return None
+        return self.X.read()
+
     def read_y(self):
-         """Returns y-axis position value of joystick. Value range: from 0 to 1"""
-         return self.Y.read()
+        if self.Y is None:
+            return None
+        return self.Y.read()

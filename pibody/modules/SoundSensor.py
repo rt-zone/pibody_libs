@@ -2,15 +2,17 @@ from Extensions.ADCExt import ADC
 from Extensions.PinExt import Pin
 
 adc_pins = [26, 27, 28]
-# TODO: Check for adc pins through ADC module. try - catch.
+MODULE_NAME = "SoundSensor"
 class SoundSensor:
     def __init__(self, analog_pin, digital_pin):
         """
             Sound Sensor Module can return analog or digital value of sound. Threshold of Digital value of sound is defined by a switch on a module.
         """
         self._digital = Pin(digital_pin, Pin.IN)
+
+
         if analog_pin not in adc_pins:
-            print("Recommended to use sound sensor on slots C or F. Ignore it if you plan on using only read_digital() method")
+            print(f"[{MODULE_NAME}] Can't initialize analog port in this slot. Recommended to use sound sensor on slots C or F. Ignore it if you plan on using only read_digital() method")
             return
 
         self._analog = ADC(analog_pin)

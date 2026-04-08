@@ -8,7 +8,6 @@ def angle2duty(angle):
     return duty
 
 
-# TODO: Refactor methods duty_u16 and angle
 class Servo:
     def __init__(self, pin):
         self.servo = PWM(pin)

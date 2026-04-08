@@ -25,7 +25,6 @@ class OneShotTimer:
         self._callback()
 
 
-# TODO: Add Mute state on buzzer's on() and off() methods
 class Buzzer(PWM):
     def __init__(self, pin, volume=0.5, freq=560):
         super().__init__(pin)
