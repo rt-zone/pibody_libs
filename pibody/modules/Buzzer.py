@@ -1,8 +1,10 @@
-from machine import PWM, Timer
+from machine import Timer
+from Extensions.PWMExt import PWM
 from math import e
+from time import sleep
+
 
 class OneShotTimer:
-    
     is_available = True
 
     def __init__(self, period, callback):
@@ -22,24 +24,36 @@ class OneShotTimer:
         OneShotTimer.is_available = True
         self._callback()
 
+
+# TODO: Add Mute state on buzzer's on() and off() methods
 class Buzzer(PWM):
     def __init__(self, pin, volume=0.5, freq=560):
         super().__init__(pin)
         self._volume = volume
         self.freq(freq)
         self._is_playing = False
+        self._is_muted = False
         self._queue = []
 
     def volume(self, volume=None):
         if volume is None:
             return self._volume
-        self._volume = _set_duty_by_volume(volume)
+        self._volume = self._set_duty_by_volume(volume)
     
 
-    def make_sound(self, freq, volume, duration):
-        self._queue.append((freq, volume, duration))
-        if not self._is_playing:
-            self._play_next()
+    MAX_QUEUE = 100
+    def make_sound(self, freq, volume, duration, blocking=True):
+        if blocking:
+            self.freq(freq)
+            self._set_duty_by_volume(volume)
+            sleep(duration)
+            self.duty(0)
+        else:
+            if(len(self._queue) >= self.MAX_QUEUE):
+                return
+            self._queue.append((freq, volume, duration))
+            if not self._is_playing:
+                self._play_next()
 
 
     def _play_next(self):
@@ -55,7 +69,7 @@ class Buzzer(PWM):
         )
 
     def _on_timer(self):
-        self.duty_u16(0)
+        self.duty(0)
         self._is_playing = False
         self._play_next()  
 
@@ -66,13 +80,14 @@ class Buzzer(PWM):
         self.make_sound(500, self._volume, 0.1)
         
     def on(self):
-        self.volume(self._volume)
+        self._is_muted = False
 
     def off(self):
-        self.duty(0)
+        self._is_muted = True
 
     def _set_duty_by_volume(self, volume):
         volume = max(0, volume)
         volume = min(1, volume)
-        self.duty((volume ** e) / 2)
+        volume *= int(not self._is_muted)
+        self.duty((volume ** 1.25) / 2)
         return volume

@@ -1,9 +1,9 @@
-from machine import ADC, Pin
-
+from Extensions.ADCExt import ADC 
+# TODO: Allow ports other than "F" but call warnings
 class Joystick():
     def __init__(self, pinX, pinY):
-            self.X = ADC(Pin(pinX))
-            self.Y = ADC(Pin(pinY))
+            self.X = ADC(pinX)
+            self.Y = ADC(pinY)
 
     def read(self):
         """Returns value of Joystick for X and Y axis. Value range: from 0 to 1."""
