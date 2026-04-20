@@ -22,7 +22,7 @@ class Servo:
             self._angle = angle
             duty = angle2duty(angle)
             self.servo.duty(duty)
-
+    # TODO: Check how those work
     def on(self):
         self.servo.init()
         

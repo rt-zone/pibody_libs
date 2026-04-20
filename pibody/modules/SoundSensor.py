@@ -1,7 +1,8 @@
 from Extensions.ADCExt import ADC
 from Extensions.PinExt import Pin
 
-adc_pins = [26, 27, 28]
+# TODO: Add either read_u16() to analog pin, or expose analog pin altogether
+# TODO: Add methods to record voice and play them. Consider adding these methods to a buzzer
 MODULE_NAME = "SoundSensor"
 class SoundSensor:
     def __init__(self, analog_pin, digital_pin):
@@ -10,12 +11,12 @@ class SoundSensor:
         """
         self._digital = Pin(digital_pin, Pin.IN)
 
-
-        if analog_pin not in adc_pins:
+        self._analog = None
+        try:
+            self._analog = ADC(analog_pin)
+        except:
             print(f"[{MODULE_NAME}] Can't initialize analog port in this slot. Recommended to use sound sensor on slots C or F. Ignore it if you plan on using only read_digital() method")
-            return
 
-        self._analog = ADC(analog_pin)
     
     def read_digital(self) -> int: 
         """
@@ -23,11 +24,11 @@ class SoundSensor:
         """
         return self._digital.value()
     
-    def read_analog(self) -> float:
+    def read_analog(self, normalized=True) -> float:
         """
             Returns analog value of sound sensor: from 0 to 1.
         """
-        return self._analog.read()
+        return self._analog.read() if normalized else self._analog.read_u16()
     
     
     def read(self) -> tuple:

@@ -32,7 +32,7 @@ class WiFi:
         self.wlan.active(True)
 
 
-    def connect(self, ssid: str, password: str, timeout: int = 10):
+    def connect(self, ssid: str, password: str, timeout: int = 20):
         if self.wlan.isconnected():
             print("Already connected.")
             print(f"IP address: {self.wlan.ifconfig()[0]}")

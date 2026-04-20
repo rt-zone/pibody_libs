@@ -9,7 +9,7 @@ from micropython import const
 
 _DISPLAY_BUF_SIZE = const(80 * 80 * 2)
 
-
+# TODO: Refactor this class, add st7789 to cmodules in Artiware builder, refactor methods through framebuff and include them in cmodules as well.
 class Display(st7789.ST7789):
     # Singleton instance
     _instance = None
@@ -147,7 +147,7 @@ class Display(st7789.ST7789):
         self.text("Education", x - r, y + r + 32, font=font_bold, fg=st7789.BLACK, bg=st7789.WHITE)
         self.text("artisan.education", 100, 300, fg=st7789.BLACK, bg=st7789.WHITE)
     
-
+# TODO: Add color to the print
     def print(self, *args, font=font_medium):
         max_chars = self.width // font.WIDTH
         msg = (">> " + " ".join(str(a) for a in args))
