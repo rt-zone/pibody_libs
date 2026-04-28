@@ -23,11 +23,11 @@ def LEDTower(slot = 8):
     return NeoPixel(resolve_pins(slot)[0])
 
 def Buzzer(slot):
-    from .modules.Buzzer import Buzzer as _Buzzer
+    from .Generic.BuzzerExt import Buzzer as _Buzzer
     return _Buzzer(resolve_pins(slot)[0])
 
 def Servo(pin : int):
-    from .modules.Servo import Servo
+    from .Generic.Servo import Servo
     return Servo(pin)
 
 # I2C
@@ -66,20 +66,20 @@ def Encoder(slot : str | tuple):
     return RotaryEncoder(*resolve_pins(slot))
 
 def Joystick(slot : str | tuple):
-    from .modules.Joystick import Joystick as _Joystick
+    from .Generic.Joystick import Joystick as _Joystick
     return _Joystick(*resolve_pins(slot))
 
 def SoundSensor(slot : str | tuple):
-    from .modules.SoundSensor import SoundSensor as _SoundSensor
+    from .Generic.SoundSensor import SoundSensor as _SoundSensor
     return _SoundSensor(*resolve_pins(slot))
 
 # IOT
 def WiFi():
-    from .modules.WiFi import WiFi
+    from .IOT.WiFi import WiFi
     return WiFi()
 
 def TelegramBot(token):
-    from .modules.TelegramBot import TelegramBot as TGB
+    from .IOT.TelegramBot import TelegramBot as TGB
     return TGB(token)
 
 
