@@ -1,11 +1,12 @@
 {
-  "helper.py": "a727b006d2de84a7115c81abc76d853aed8b1c81fc3299fd6b8eeeddc8d3a6c5",
-  "__init__.py": "fd1f676eed1e9841dd350a151c60a429817cefa363ef878f67b09b924bc0cab3",
-  "modules/Servo.py": "f1234a29f5ae7fbc47ae14c7b7e01923cd4f36a30c722db45e57e23d2d3e24f2",
-  "modules/WiFi.py": "408b4f902dda7084665d6c65fb62949c9eb23ed77d9a46394c71a17668c9c219",
-  "modules/SoundSensor.py": "c935fcb5f4c7b34a83efa0eabf6c24e1f3e8d9e1ab5e40bee91ae221cb2af851",
-  "modules/Display.py": "79aaebfba43ab5716a02f9a8eddf7761932da22441765e30ed8bd0c50a56ad95",
-  "modules/Joystick.py": "0d7e37de106a532455a471b66ff7dc38072459be274a56afac4d95abc3166bb9",
-  "modules/TelegramBot.py": "6b48338c6f8bb9d07e1692e8938a4cd521e277644e9827d19a853dd205e03e97",
-  "modules/Buzzer.py": "e58be814f6ac76554b2eeeed860c010601aba4c3a5792d79f4f09060a3dc95f5"
+  "Display.py": "313877d3d22c4427eef530e882d67393a126c10ac5a6e4874503c6223fbad8b4",
+  "helper.py": "7e8b4a38c1c5ab440fac1440c2ac4b7d760b629ebd1f08e2cebe870f1cd23fc2",
+  "__init__.py": "61056f55bb3784b0bb72d3bdccb07b2bc2ba14de6bce1abc6afdf7edff48d2de",
+  "IOT/WiFi.py": "aaa99ff022a720b386f79699c328a0096e592ed2e72d4b8349782a35458daa0f",
+  "IOT/TelegramBot.py": "6b48338c6f8bb9d07e1692e8938a4cd521e277644e9827d19a853dd205e03e97",
+  "depricated/Servo.py": "743381a83f42eb8fc61c86b42c5abd1c4d7f1ed94cd9f451a19e8a7fff1dd34e",
+  "depricated/SoundSensor.py": "e1adfd53e2c12b1317e2dd692e723c51ea0d4b821c99bc37fb059db1180723a2",
+  "depricated/Joystick.py": "a260af07a917b01ee5ef70cb8a0efc2bf66a8ed6d0aa7ae45259759368a3b25f",
+  "depricated/Buzzer.py": "e176ed2cb3a69fd4c754454817046cc39c2ac29bc38659fdba2124398b9ec628",
+  "depricated/BuzzerExt.py": "930272f6d654232d0fc279f0cd13f5a9bc13900a3ba29fc5ffaed41cde2b7501"
 }
