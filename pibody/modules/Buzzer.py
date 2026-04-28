@@ -1,9 +1,10 @@
 from machine import Timer
-from Extensions.PWMExt import PWM
 from math import e
 from time import sleep
 
+from Extensions.PWMExt import PWM
 
+MODULE_NAME = "BUZZER"
 class OneShotTimer:
     is_available = True
 

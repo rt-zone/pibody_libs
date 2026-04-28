@@ -10,11 +10,12 @@ from micropython import const
 _DISPLAY_BUF_SIZE = const(80 * 80 * 2)
 
 # TODO: Refactor this class, add st7789 to cmodules in Artiware builder, refactor methods through framebuff and include them in cmodules as well.
+
 class Display(st7789.ST7789):
     # Singleton instance
     _instance = None
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls):
         if cls._instance is None:
             cls._instance = super(Display, cls).__new__(cls)
             cls._instance._initialized = False

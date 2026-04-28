@@ -26,9 +26,9 @@ def Buzzer(slot):
     from .modules.Buzzer import Buzzer as _Buzzer
     return _Buzzer(resolve_pins(slot)[0])
 
-def Servo(slot : str | tuple):
+def Servo(pin : int):
     from .modules.Servo import Servo
-    return Servo(resolve_pins(slot)[0])
+    return Servo(pin)
 
 # I2C
 def GyroAccel(slot, hard_i2c=False):

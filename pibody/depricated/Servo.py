@@ -1,5 +1,6 @@
 from Extensions.PWMExt import PWM
 
+MODULE_NAME = "Servo"
 SERVO_PERIOD_MS = 20
 
 def angle2duty(angle):
