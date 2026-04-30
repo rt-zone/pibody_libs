@@ -1,7 +1,7 @@
 {
-  "Display.py": "313877d3d22c4427eef530e882d67393a126c10ac5a6e4874503c6223fbad8b4",
+  "UI.py": "19aa89bf21e6f4bb3c24cb7d5e90a106ee2ec02b631df319f254f19b5934f926",
   "helper.py": "7e8b4a38c1c5ab440fac1440c2ac4b7d760b629ebd1f08e2cebe870f1cd23fc2",
-  "__init__.py": "61056f55bb3784b0bb72d3bdccb07b2bc2ba14de6bce1abc6afdf7edff48d2de",
+  "__init__.py": "848a0273c7f71ba115077cbdbad681e225fa83aa426054a1280ad3c59c8d3ffa",
   "IOT/WiFi.py": "aaa99ff022a720b386f79699c328a0096e592ed2e72d4b8349782a35458daa0f",
   "IOT/TelegramBot.py": "6b48338c6f8bb9d07e1692e8938a4cd521e277644e9827d19a853dd205e03e97",
   "depricated/Servo.py": "743381a83f42eb8fc61c86b42c5abd1c4d7f1ed94cd9f451a19e8a7fff1dd34e",
