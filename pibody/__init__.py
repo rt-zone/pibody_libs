@@ -108,5 +108,5 @@ GyroAxel        = GyroAccel
 # TODO: How to make it transparent?
 def __getattr__(name):
     if name == "display":
-        from .modules.Display import Display
+        from Display import Display
         return Display()

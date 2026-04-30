@@ -10,7 +10,6 @@ from micropython import const
 _DISPLAY_BUF_SIZE = const(80 * 80 * 2)
 
 # TODO: Refactor this class, add st7789 to cmodules in Artiware builder, refactor methods through framebuff and include them in cmodules as well.
-
 class Display(st7789.ST7789):
     # Singleton instance
     _instance = None
@@ -25,7 +24,7 @@ class Display(st7789.ST7789):
         if self._initialized:
             return
         self._initialized = True
-        super().__init__(SPI(1, baudrate=400_000_000, sck=Pin(10), mosi=Pin(11)),
+        super().__init__(SPI(1, baudrate=60_000_000, sck=Pin(10), mosi=Pin(11)),
             240,
             320,
             reset=Pin(13, Pin.OUT),
@@ -40,7 +39,6 @@ class Display(st7789.ST7789):
         self.font_medium = font_medium
         self.font_large = font_large
         self.font_bold = font_bold
-        
         
         self.BLACK = st7789.BLACK
         self.BLUE = st7789.BLUE
