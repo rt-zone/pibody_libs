@@ -3,23 +3,23 @@ from pibody.helper import resolve_pins, get_i2c
 # TODO: Change ADC slot arrays in Joystick, SoundSensor because now firmware stores pins otherwise
 # 3 Pin
 def LED(slot):
-    from Extensions.PinExt import Pin
+    from PinExt import Pin
     return Pin(resolve_pins(slot)[0], Pin.OUT)
     
 def Button(slot):
-    from Extensions.PinExt import Pin
+    from PinExt import Pin
     return Pin(resolve_pins(slot)[0], Pin.IN)
         
 def ADC(slot):
-    from Extensions.ADCExt import ADC
+    from ADCExt import ADC
     return ADC(resolve_pins(slot)[0])
 
 def PWM(slot):
-    from Extensions.PWMExt import PWM
+    from PWMExt import PWM
     return PWM(resolve_pins(slot)[0])
 
 def LEDTower(slot = 8):
-    from Extensions.NeoPixelExt import NeoPixel
+    from NeoPixelExt import NeoPixel
     return NeoPixel(resolve_pins(slot)[0])
 
 def Buzzer(slot):
@@ -82,6 +82,10 @@ def TelegramBot(token):
     from .IOT.TelegramBot import TelegramBot as TGB
     return TGB(token)
 
+# Display
+def Display():
+    from .Display import Display
+    return Display()
 
 # Button Likes
 Switch          = Button
@@ -105,8 +109,3 @@ Sound           = SoundSensor
 #Other
 GyroAxel        = GyroAccel
 
-# TODO: How to make it transparent?
-def __getattr__(name):
-    if name == "display":
-        from Display import Display
-        return Display()

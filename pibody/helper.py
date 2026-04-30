@@ -54,3 +54,4 @@ def get_i2c(slot, hard_i2c=False):
     else: 
         return SoftI2C(scl=Pin(scl), sda=Pin(sda))
 
+
