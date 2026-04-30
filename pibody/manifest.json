@@ -1,12 +1,8 @@
 {
-  "UI.py": "19aa89bf21e6f4bb3c24cb7d5e90a106ee2ec02b631df319f254f19b5934f926",
-  "helper.py": "7e8b4a38c1c5ab440fac1440c2ac4b7d760b629ebd1f08e2cebe870f1cd23fc2",
-  "__init__.py": "848a0273c7f71ba115077cbdbad681e225fa83aa426054a1280ad3c59c8d3ffa",
+  "Display.py": "a93d95e0183db0f7eaf7be2594ae4ac41d1efc8a6d6ae4f327a418406bc13fab",
+  "helper.py": "4d47289807907bcb63323076054b68cf56c002e91cd41d537ff969d905148521",
+  "__init__.py": "9c9dfd487bf8691cfb77778e6b7e0bcf8802ff8cdb457148aa3cbf6e3ff61bbf",
   "IOT/WiFi.py": "aaa99ff022a720b386f79699c328a0096e592ed2e72d4b8349782a35458daa0f",
   "IOT/TelegramBot.py": "6b48338c6f8bb9d07e1692e8938a4cd521e277644e9827d19a853dd205e03e97",
-  "depricated/Servo.py": "743381a83f42eb8fc61c86b42c5abd1c4d7f1ed94cd9f451a19e8a7fff1dd34e",
-  "depricated/SoundSensor.py": "e1adfd53e2c12b1317e2dd692e723c51ea0d4b821c99bc37fb059db1180723a2",
-  "depricated/Joystick.py": "a260af07a917b01ee5ef70cb8a0efc2bf66a8ed6d0aa7ae45259759368a3b25f",
-  "depricated/Buzzer.py": "e176ed2cb3a69fd4c754454817046cc39c2ac29bc38659fdba2124398b9ec628",
-  "depricated/BuzzerExt.py": "930272f6d654232d0fc279f0cd13f5a9bc13900a3ba29fc5ffaed41cde2b7501"
+  "beta/BuzzerExt.py": "930272f6d654232d0fc279f0cd13f5a9bc13900a3ba29fc5ffaed41cde2b7501"
 }
