@@ -1,6 +1,6 @@
 from machine import I2C, SoftI2C, Pin
 
-# Slot Name: (Main Pin, Secondary Pin, I2C Bus)
+# Slot Name: (Main Pin, Secondary Pin)
 
 _SLOT_MAP = {
     'A': ('A1', 'A2'),

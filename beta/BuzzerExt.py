@@ -1,3 +1,5 @@
+# This module is in beta test state. Meaning that we never found enough time to check whether this module is stable and covers all edge cases and risky to let it in through to the final state.
+
 from machine import Timer
 from math import e
 from time import sleep

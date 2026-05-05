@@ -1,6 +1,5 @@
 from pibody.helper import resolve_pins, get_i2c
 
-# TODO: Change ADC slot arrays in Joystick, SoundSensor because now firmware stores pins otherwise
 # 3 Pin
 def LED(slot):
     from PinExt import Pin

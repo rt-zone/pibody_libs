@@ -1,8 +1,6 @@
 from DisplayBase import DisplayBase #Firmware site display. Contains only minimal code.  
 import math
 
-
-
 class Display(DisplayBase):
     """This class expands functionality of built-in Display class by providing methods for UI elements"""
     def __init__(self):
@@ -22,13 +20,10 @@ class Display(DisplayBase):
 
     def linear_bar(
             self, x, y, 
-            length, 
-            value, 
-            min_value,
-            max_value, 
-            height=5, 
+            value, min_value, max_value, 
+            length=100, height=5, 
             border=False, 
-            color=DisplayBase.GREEN, 
+            bar_color=DisplayBase.GREEN, 
             border_color=DisplayBase.WHITE, 
             background_color=DisplayBase.BLACK):
         
@@ -39,7 +34,7 @@ class Display(DisplayBase):
         ratio = (value - min_value) / (max_value - min_value)
         fill_length = int(length * ratio)
 
-        self.fill_rect(x, y-half_height, fill_length, height, color) # Filler
+        self.fill_rect(x, y-half_height, fill_length, height, bar_color) # Filler
 
         if border:
             self.rect(x-1, y-half_height - 1 , length+2, height+2, border_color) # Border
@@ -61,7 +56,6 @@ class Display(DisplayBase):
         self.arc(background_color, center_x, center_y, r, width=width, start_angle=int(angle)-90, end_angle=270)
         self.arc(color, center_x, center_y, r, width=width, start_angle=-90, end_angle=int(angle)-90)
 
-    # TODO: Think about renaming. Check for optimizations
     def draw_polygon(self, center_x, center_y, r, n, bump=1.0, angle_offset=None, color=DisplayBase.WHITE, fill=False):
         buf = []
         angle = 0
@@ -89,7 +83,6 @@ class Display(DisplayBase):
         else:
             self.polygon(buf, 0, 0, color)
 
-    # TODO: Update method on Demo
     def logo(self, x=120, y=100, r=80):
         super().fill(DisplayBase.WHITE)
         self.draw_polygon(x, y, r, 8, bump=0.7, fill=True, color=DisplayBase.BLACK)
@@ -98,7 +91,7 @@ class Display(DisplayBase):
         self.text("Education", x - r, y + r + 32, font=DisplayBase.font_bold, fg=DisplayBase.BLACK, bg=DisplayBase.WHITE)
         self.text("artisan.education", 100, 300, fg=DisplayBase.BLACK, bg=DisplayBase.WHITE)
     
-    # TODO: Add font support.
+    # TODO: Add font support.Fix Text appearing at the top bug
     def print(self, *args, font=DisplayBase.font_medium, color=DisplayBase.WHITE):
         max_chars = self.width // font.WIDTH
         msg = (">> " + " ".join(str(a) for a in args))
