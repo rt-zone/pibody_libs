@@ -1,5 +1,5 @@
 from pibody.helper import resolve_pins, get_i2c
-
+# This Libs correspond to the firmware PiBody v1.1, on Micropython v1.28.0. Other version might be incompatible. Check your REPL banner to make sure that versions are the same
 # 3 Pin
 def LED(slot):
     from PinExt import Pin
@@ -17,16 +17,16 @@ def PWM(slot):
     from PWMExt import PWM
     return PWM(resolve_pins(slot)[0])
 
-def LEDTower(slot = 8):
+def LEDTower(slot):
     from NeoPixelExt import NeoPixel
     return NeoPixel(resolve_pins(slot)[0])
 
 def Buzzer(slot):
-    from .Generic.BuzzerExt import Buzzer as _Buzzer
+    from Generic.Buzzer import Buzzer as _Buzzer
     return _Buzzer(resolve_pins(slot)[0])
 
 def Servo(pin : int):
-    from .Generic.Servo import Servo
+    from Generic.Servo import Servo
     return Servo(pin)
 
 # I2C
@@ -65,11 +65,11 @@ def Encoder(slot : str | tuple):
     return RotaryEncoder(*resolve_pins(slot))
 
 def Joystick(slot : str | tuple):
-    from .Generic.Joystick import Joystick as _Joystick
+    from Generic.Joystick import Joystick as _Joystick
     return _Joystick(*resolve_pins(slot))
 
 def SoundSensor(slot : str | tuple):
-    from .Generic.SoundSensor import SoundSensor as _SoundSensor
+    from Generic.SoundSensor import SoundSensor as _SoundSensor
     return _SoundSensor(*resolve_pins(slot))
 
 # IOT
@@ -82,16 +82,19 @@ def TelegramBot(token):
     return TGB(token)
 
 # Display
-def Display():
-    from .Display import Display
-    return Display()
+def __getattr__(name):
+    if name == "display":
+        from .Display import Display as _Display
+        return _Display()
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
-# Button Likes
+# Aliases
+# Button
 Switch          = Button
 TouchSensor     = Button
 MotionSensor    = Button
 
-# Analog Likes
+# ADC
 LightSensor     = ADC
 Potentiometer   = ADC
 
@@ -105,6 +108,6 @@ Light           = LightSensor
 Pot             = Potentiometer
 Sound           = SoundSensor
 
-#Other
+#Legacy support
 GyroAxel        = GyroAccel
 

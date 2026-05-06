@@ -1,29 +1,21 @@
 from DisplayBase import DisplayBase #Firmware site display. Contains only minimal code.  
 import math
 
+# TODO: Make a UI class
 class Display(DisplayBase):
     """This class expands functionality of built-in Display class by providing methods for UI elements"""
     def __init__(self):
         super().__init__()
-        self.current_line = 0
-        self.vssa = 0
+        self._current_line = 0
+        self._vssa = 0
 
 
-    def arc(self, color, center_x, center_y, r, width=1, start_angle=0, end_angle=360):
-        r2 = r + width
-        for r in range(r, r2):
-            for i in range(start_angle, end_angle):
-                dx = center_x + r * math.cos(math.pi/180*i)
-                dy = center_y + r * math.sin(math.pi/180*i)
-                super().pixel(round(dx), round(dy), color)
 
-
-    def linear_bar(
-            self, x, y, 
+    def linear_bar(self, 
+            x, y, 
             value, min_value, max_value, 
-            length=100, height=5, 
-            border=False, 
-            bar_color=DisplayBase.GREEN, 
+            length=100, height=5, border=False, 
+            color=DisplayBase.GREEN, 
             border_color=DisplayBase.WHITE, 
             background_color=DisplayBase.BLACK):
         
@@ -34,7 +26,7 @@ class Display(DisplayBase):
         ratio = (value - min_value) / (max_value - min_value)
         fill_length = int(length * ratio)
 
-        self.fill_rect(x, y-half_height, fill_length, height, bar_color) # Filler
+        self.fill_rect(x, y-half_height, fill_length, height, color) # Filler
 
         if border:
             self.rect(x-1, y-half_height - 1 , length+2, height+2, border_color) # Border
@@ -48,13 +40,23 @@ class Display(DisplayBase):
 
             self.fill_rect(x + fill_length, y - 1 + height % 2, length - fill_length, 1 + even , border_color) # Central Line
 
+    def arc(self, center_x, center_y, r, color=DisplayBase.WHITE, width=1, start_angle=0, end_angle=360):
+        r2 = r + width
+        for r in range(r, r2):
+            for i in range(start_angle, end_angle):
+                dx = center_x + r * math.cos(math.pi/180*i)
+                dy = center_y + r * math.sin(math.pi/180*i)
+                super().pixel(round(dx), round(dy), color)
 
     def circular_bar(self, center_x, center_y, r, value, min_value, max_value, width=2, color=DisplayBase.GREEN, background_color=DisplayBase.WHITE):
         # Get angle from value
-        angle = min(max(value - min_value, 0), max_value - min_value) / (max_value - min_value) * 360
+        value = max(min_value, min(max_value, value))
+        ratio = (value - min_value) / (max_value - min_value)
+        angle = ratio * 360
+
         # Draw progress bar
-        self.arc(background_color, center_x, center_y, r, width=width, start_angle=int(angle)-90, end_angle=270)
-        self.arc(color, center_x, center_y, r, width=width, start_angle=-90, end_angle=int(angle)-90)
+        self.arc(center_x, center_y, r, background_color, width=width, start_angle=int(angle)-90, end_angle=270)
+        self.arc(center_x, center_y, r, color, width=width, start_angle=-90, end_angle=int(angle)-90)
 
     def draw_polygon(self, center_x, center_y, r, n, bump=1.0, angle_offset=None, color=DisplayBase.WHITE, fill=False):
         buf = []
@@ -91,7 +93,12 @@ class Display(DisplayBase):
         self.text("Education", x - r, y + r + 32, font=DisplayBase.font_bold, fg=DisplayBase.BLACK, bg=DisplayBase.WHITE)
         self.text("artisan.education", 100, 300, fg=DisplayBase.BLACK, bg=DisplayBase.WHITE)
     
-    # TODO: Add font support.Fix Text appearing at the top bug
+    def crosshair(self, x, y, r, color=DisplayBase.GREEN, border_color=DisplayBase.WHITE):
+        raise NotImplementedError
+    
+
+
+    # TODO: Add font support.Fix Text appearing at the top bug. Add word wrapping support.
     def print(self, *args, font=DisplayBase.font_medium, color=DisplayBase.WHITE):
         max_chars = self.width // font.WIDTH
         msg = (">> " + " ".join(str(a) for a in args))
@@ -111,21 +118,23 @@ class Display(DisplayBase):
     def _print_line(self, msg, font, color):
         max_lines = self.height // font.HEIGHT
         line_height = font.HEIGHT
-        if self.vssa - line_height < 0:
-            self.vssa = 320
-        self.vssa = (self.vssa - line_height) % self.height
-        self.vscsad(self.vssa)
+        if self._vssa - line_height < 0:
+            self._vssa = 320
+        self._vssa = (self._vssa - line_height) % self.height
+        self.vscsad(self._vssa)
 
-        y = (self.current_line * line_height) % self.height
+        y = (self._current_line * line_height) % self.height
         self.fill_rect(0, y, 240, line_height, 0)  
         self.text(msg, 0, y, font=font, fg=color)
         
 
-        self.current_line += 1
-        if self.current_line >= max_lines:
-            self.current_line = 0
+        self._current_line += 1
+        if self._current_line >= max_lines:
+            self._current_line = 0
 
     def clear(self):
-        self.clear()
-        self.current_line = 0
-        self.vssa = 320
+        super().clear()
+        # Clear console and reset hardware scroll
+        self._current_line = 0
+        self._vssa = 0
+        self.vscsad(self._vssa)

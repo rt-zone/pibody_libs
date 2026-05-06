@@ -1,26 +1,15 @@
-from machine import Pin, ADC
 from time import sleep, ticks_ms
-from pibody import Encoder
-from ..module import Module 
-from ..projectConfig import ProjectConfig
-from ..tester import Tester
-from ..hinter import Hinter
-import gc
+from ..helper import ProjectConfig, Module
+from pibody import Button, Encoder, Switch, Touch, Pot, LEDTower
 
-hinter = Hinter()
-
-project_config = ProjectConfig(
-    title="RGB Tester",
-    modules=[
-        Module(Module.BUTTON_BLUE, "A"),
-        Module(Module.BUTTON_YELLOW, "B"),
-        Module(Module.POTENTIOMETER, "C"),
-        Module(Module.ENCODER, "D"),
-        Module(Module.SWITCH, "E"),
-        Module(Module.TOUCH_SENSOR, "F")
-    ],
-    led_tower=True
-)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
+CYAN = (0, 255, 255)
+MAGENTA = (255, 0, 255)
+WHITE = (255, 255, 255)
+ORANGE = (255, 165, 0)
 class ModeManager:
     def __init__(self, np, adc, encoder, n=8):
         self.np = np
@@ -28,12 +17,8 @@ class ModeManager:
         self.encoder = encoder
         self.n = n
         self.current_mode = 0
-        self.current_color = (255, 0, 0)
-        self.colors = [
-            (255, 0, 0), (0, 255, 0), (0, 0, 255),
-            (255, 255, 0), (0, 255, 255), (255, 0, 255),
-            (255, 255, 255), (255, 165, 0)
-        ]
+        self.current_color = RED
+        self.colors = [RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA, WHITE, ORANGE]
         self.rainbow_offset = 0
         self.comet_direction = 1
         self.last_update = 0
@@ -129,27 +114,32 @@ class ModeManager:
     def run_current_mode(self):
         self.modes[self.current_mode][1]()
 
+modules={
+    Module.BUTTON_BLUE : "A",
+    Module.BUTTON_YELLOW : "B",
+    Module.POTENTIOMETER : "C",
+    Module.ENCODER : "D",
+    Module.SWITCH : "E",
+    Module.TOUCH_SENSOR : "F"
+}
 
-class NeoPixelTester(Tester):
+class RGBTester:
+
+    config = ProjectConfig(
+        title="RGB Tester",
+        modules=modules,
+        led_tower=True
+    )
     def __init__(self):
-        super().__init__(project_config)
-    def init(self):
-        super().init()
-        for module in self.modules:
-            if module.name == Module.BUTTON_BLUE:
-                self.btn_prev = module.getPin(Pin.IN)
-            if module.name == Module.BUTTON_YELLOW:
-                self.btn_next = module.getPin(Pin.IN)
-            if module.name == Module.POTENTIOMETER:
-                self.adc = module.getADC()
-            if module.name == Module.TOUCH_SENSOR:
-                self.btn_color = module.getPin(Pin.IN)
-            if module.name == Module.SWITCH:
-                self.switch = module.getPin(Pin.IN)
-            if module.name == Module.ENCODER:
-                self.encoder = Encoder(module.getSlot())
-        self.np = self.led_tower
-        self.manager = ModeManager(self.np, self.adc, self.encoder, 8)
+        self.btn_prev = Button(modules[Module.BUTTON_BLUE])
+        self.btn_next = Button(modules[Module.BUTTON_YELLOW])
+        self.pot = Pot(modules[Module.POTENTIOMETER])
+        self.btn_color = Touch(modules[Module.TOUCH_SENSOR])
+        self.switch = Switch(modules[Module.SWITCH])
+        self.encoder = Encoder(modules[Module.ENCODER])
+       
+        self.np = LEDTower(8)
+        self.manager = ModeManager(self.np, self.pot, self.encoder, 8)
 
         self.last_button_press = 0
         self.debounce = 200
@@ -188,7 +178,3 @@ class NeoPixelTester(Tester):
             return
         self.manager.run_current_mode()
         sleep(0.005)
-
-        if not self.isRunning:
-            hinter.drawModules(project_config)
-            return
