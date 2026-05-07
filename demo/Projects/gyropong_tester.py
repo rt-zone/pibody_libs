@@ -13,7 +13,7 @@ color_map = [red_color, yellow_color, green_color]
 dim_color_map = [dim_red_color, dim_yellow_color, dim_green_color]
 
 x = 50
-y = 50
+y = 100
 r = 15
 
 freq_map = [
@@ -38,6 +38,15 @@ class GyroPongTester:
     )
 
     def __init__(self):
+        pass
+    
+    def update_leds(self, index):
+        for i in range(len(self.leds)):
+            self.leds[i].value(i==index)
+            color = color_map[i] if i == index else dim_color_map[i]
+            display.fill_circle(x, y + i * 40, r, color)        
+
+    def start(self):
         self.led_r = LED(modules[Module.LED_R])
         self.led_y = LED(modules[Module.LED_Y])
         self.led_g = LED(modules[Module.LED_G])
@@ -51,16 +60,18 @@ class GyroPongTester:
         self._led_index = 0
         self._last_index = 0
         self._last_time = 0
+        self.buzzer.beep()
+        for led in self.leds:
+            led.on()
+        time.sleep_ms(100) 
+        for led in self.leds:
+            led.off()
 
-    def update_leds(self, index):
-        for i in range(len(self.leds)):
-            self.leds[i].value(i==index)
-            color = color_map[i] if i == index else dim_color_map[i]
-            display.fill_circle(x, y + i * 40, r, color)
-
-    # TODO: Add crosshair
     def loop(self):
         x, y, z = self.gyro_accel.read_accel()
+        
+        display.crosshair(-y, -x, 5, 150, 150, 60)
+
         if (time.ticks_diff(time.ticks_ms(), self._last_time) > 250):
             self._last_time = time.ticks_ms()
 
@@ -80,5 +91,6 @@ class GyroPongTester:
 
 if __name__ == "__main__":
     project = GyroPongTester()
+    project.start()
     while True:
         project.loop()

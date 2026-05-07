@@ -17,4 +17,4 @@ def get_next_project():
     current_project = projects[project_index]
     project_index += 1
     project_index %= len(projects)
-    return current_project
+    return current_project()

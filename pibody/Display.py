@@ -9,8 +9,6 @@ class Display(DisplayBase):
         self._current_line = 0
         self._vssa = 0
 
-
-
     def linear_bar(self, 
             x, y, 
             value, min_value, max_value, 
@@ -58,6 +56,34 @@ class Display(DisplayBase):
         self.arc(center_x, center_y, r, background_color, width=width, start_angle=int(angle)-90, end_angle=270)
         self.arc(center_x, center_y, r, color, width=width, start_angle=-90, end_angle=int(angle)-90)
 
+        
+    crosshair_last_x = 0
+    crosshair_last_y = 0
+    
+    def crosshair(self, 
+                  x, y, r, 
+                  x_center, y_center, crosshair_radius, 
+                  color=DisplayBase.RED, border_color=DisplayBase.WHITE, background_color=DisplayBase.BLACK):
+        """
+            Renders a ball at the center of crosshair. 
+            x, y cords are relative. and ranged from -1 to 1, where 0 is the middle of the crosshair
+        """
+        self.circle(x_center, y_center, crosshair_radius, border_color)
+
+        x_cord = round(x * crosshair_radius) + x_center
+        y_cord = round(y * crosshair_radius) + y_center
+
+        if x_cord == self.crosshair_last_x and y_cord == self.crosshair_last_y:
+            return
+        
+        self.fill_circle(self.crosshair_last_x, self.crosshair_last_y, r, background_color)
+        self.fill_circle(x_cord, y_cord, r, color)
+
+        self.crosshair_last_x = x_cord
+        self.crosshair_last_y = y_cord
+
+
+
     def draw_polygon(self, center_x, center_y, r, n, bump=1.0, angle_offset=None, color=DisplayBase.WHITE, fill=False):
         buf = []
         angle = 0
@@ -92,10 +118,6 @@ class Display(DisplayBase):
         self.text("Artisan", x - r, y + r, font=DisplayBase.font_bold, fg=DisplayBase.BLACK, bg=DisplayBase.WHITE)
         self.text("Education", x - r, y + r + 32, font=DisplayBase.font_bold, fg=DisplayBase.BLACK, bg=DisplayBase.WHITE)
         self.text("artisan.education", 100, 300, fg=DisplayBase.BLACK, bg=DisplayBase.WHITE)
-    
-    def crosshair(self, x, y, r, color=DisplayBase.GREEN, border_color=DisplayBase.WHITE):
-        raise NotImplementedError
-    
 
 
     # TODO: Add font support.Fix Text appearing at the top bug. Add word wrapping support.
