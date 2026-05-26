@@ -1,6 +1,9 @@
-from . import pin_test, import_test, display_test
+from blind_test import pin_test, import_test, display_test
 
 def run():
     import_test.run()
     pin_test.run(True)
     display_test.run()
+
+if __name__ == "__main__":
+    run()

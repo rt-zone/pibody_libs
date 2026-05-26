@@ -36,13 +36,15 @@ def resolve_pins(slot):
         return slot
 
     if isinstance(slot, str):
-        if slot not in _SLOT_MAP:
-            valid = ", ".join(sorted(_SLOT_MAP.keys()))
-            raise ValueError(f"Invalid slot '{slot}'. Valid options: {valid}")
-        return _SLOT_MAP[slot]
-
+        if slot in _SLOT_MAP:
+            return _SLOT_MAP[slot]
+        else:
+            return (slot, None) # In case if user tries to provide string value of Pin like "LED", "BUTTON_LEFT", "A1", etc.
+        
     raise TypeError(f"Unsupported slot type: {type(slot).__name__}")
 
+def get_pin(slot):
+    return resolve_pins(slot)[0]
 
 def get_i2c(slot, hard_i2c=False):
     if isinstance(slot, (I2C, SoftI2C)):

@@ -1,29 +1,36 @@
-from pibody.helper import resolve_pins, get_i2c
+from pibody.helper import resolve_pins, get_i2c, get_pin
+from pibody import helper
 # This Libs correspond to the firmware PiBody v1.1, on Micropython v1.28.0. Other version might be incompatible. Check your REPL banner to make sure that versions are the same
 # 3 Pin
 def LED(slot):
     from PinExt import Pin
-    return Pin(resolve_pins(slot)[0], Pin.OUT)
+    pin = helper.get_pin(slot)
+    return Pin(pin, Pin.OUT)
     
 def Button(slot):
     from PinExt import Pin
-    return Pin(resolve_pins(slot)[0], Pin.IN)
+    pin = helper.get_pin(slot)
+    return Pin(pin, Pin.IN)
         
 def ADC(slot):
     from ADCExt import ADC
-    return ADC(resolve_pins(slot)[0])
+    pin = helper.get_pin(slot)
+    return ADC(pin)
 
 def PWM(slot):
     from PWMExt import PWM
-    return PWM(resolve_pins(slot)[0])
+    pin = helper.get_pin(slot)
+    return PWM(pin)
 
 def LEDTower(slot):
     from NeoPixelExt import NeoPixel
-    return NeoPixel(resolve_pins(slot)[0])
+    pin = helper.get_pin(slot)
+    return NeoPixel(pin)
 
 def Buzzer(slot):
     from Generic.Buzzer import Buzzer as _Buzzer
-    return _Buzzer(resolve_pins(slot)[0])
+    pin = helper.get_pin(slot)
+    return _Buzzer(pin)
 
 def Servo(pin : int):
     from Generic.Servo import Servo
@@ -102,11 +109,11 @@ Potentiometer   = ADC
 Climate         = ClimateSensor
 Color           = ColorSensor
 Distance        = DistanceSensor
+Sound           = SoundSensor
 Touch           = TouchSensor
 Motion          = MotionSensor
 Light           = LightSensor
 Pot             = Potentiometer
-Sound           = SoundSensor
 
 #Legacy support
 GyroAxel        = GyroAccel
