@@ -88,12 +88,16 @@ def TelegramBot(token):
     from .IOT.TelegramBot import TelegramBot as TGB
     return TGB(token)
 
+# def WebUi():
+#     from .IOT.WebUi import 
+
 # Display
 def __getattr__(name):
     if name == "display":
         from .Display import Display as _Display
         return _Display()
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
 
 # Aliases
 # Button
