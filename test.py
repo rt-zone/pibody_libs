@@ -52,7 +52,6 @@ llm = LLMClient(
     api_key=API_KEY,
     url=URL,
     model=MODEL,
-    # system_prompt="отвечай на казакском",
 )
 
 code = llm.ask(stt_text)

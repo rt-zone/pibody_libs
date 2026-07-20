@@ -106,17 +106,6 @@ def on_timer(t):
     read_climate()
 
 
-# # --- Глобальная тема ---
-# theme = {
-#     "bg": "#0d1117",
-#     "card_bg": "#161b22",
-#     "text": "#e6edf3",
-#     "muted": "#8b949e",
-#     "accent": "#58a6ff",
-#     "on_color": "#3fb950",
-#     "off_color": "#30363d",
-#     "radius": "20px",
-# }
 def on_coffee():
     oled.fill(0)
     oled.text("Coffee", 38,26)

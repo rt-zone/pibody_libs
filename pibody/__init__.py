@@ -106,10 +106,10 @@ def __getattr__(name):
         return _WebUi
     
     if name == "SpeechRecognizer":
-        from .modules.stt import SpeechRecognizer
+        from .IOT.stt import SpeechRecognizer
         return SpeechRecognizer
     if name == "LLMClient":
-        from .modules.llm_client import LLMClient
+        from .IOT.llm_client import LLMClient
         return LLMClient
     if name == "sdcard":
         from .modules.sdcard import SDCard
@@ -121,7 +121,7 @@ def __getattr__(name):
         from .modules.speaker import Speaker
         return Speaker
     if name == "SpeechSynthesizer":
-        from .modules.tts import SpeechSynthesizer
+        from .IOT.tts import SpeechSynthesizer
         return SpeechSynthesizer
     
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
@@ -159,9 +159,9 @@ if FAKE_IMPORT:
     from .IOT.WebUi import WebUi
 
     from modules.microphone import Microphone
-    from modules.stt import SpeechRecognizer
-    from modules.llm_client import LLMClient
+    from pibody.IOT.stt import SpeechRecognizer
+    from pibody.IOT.llm_client import LLMClient
     from modules.sdcard import SDCard
     from modules.sdcard import SDCard as sdcard
     from modules.speaker import Speaker
-    from modules.tts import SpeechSynthesizer
+    from pibody.IOT.tts import SpeechSynthesizer
