@@ -21,7 +21,7 @@ np = neopixel.NeoPixel(Pin(NEOPIXEL_PIN), NUM_PIXELS)
 bme = ClimateSensor('B')
 
 state = {"r": 0, "g": 150, "b": 255, "brightness": 100, "on": True}
-user_text = ""  # последний введённый текст
+user_text = ""
 
 
 def apply_state():
@@ -76,11 +76,6 @@ sensor_humidity_text = "--"
 
 
 def read_climate():
-    """
-    Читает ClimateSensor. Точный API pibody.ClimateSensor мне неизвестен,
-    поэтому пробуем несколько вероятных вариантов по очереди.
-    Если ни один не сработает — печатаем dir(bme), чтобы увидеть реальные имена.
-    """
     global sensor_temp_text, sensor_pressure_text, sensor_humidity_text
     try:
         if hasattr(bme, "values"):
@@ -107,7 +102,11 @@ def read_climate():
 
     redraw_oled()
     sensor_value_display.update(
-        f"T: {sensor_temp_text}  P: {sensor_pressure_text}  H: {sensor_humidity_text}"
+        f"""
+        Temperture: {sensor_temp_text}
+        Presure: {sensor_pressure_text}
+        Humidity: {sensor_humidity_text}
+        """
     )
 
 
@@ -139,6 +138,7 @@ app.add(Toggle("Питание", value=True, on_change=on_toggle))
 
 app.add(Label("Текст на дисплей"))
 app.add(TextInput("Введите текст", value="", on_change=on_text))
+# app.add()
 
 app.add(Label("Данные климат-сенсора"))
 sensor_value_display = TextDisplay("Температура / давление / влажность", value="T: --  P: --  H: --")

@@ -1,4 +1,3 @@
-
 import network
 import socket
 import time
@@ -124,7 +123,7 @@ class Toggle(Component):
         <div class="field toggle-row"{style}>
             <label>{label}</label>
             <div class="switch" id="{id}" role="switch" aria-checked="{checked}"
-                 onclick="toggleBtn('{id}')">
+                onclick="toggleBtn('{id}')">
                 <div class="switch-track {cls}">
                     <div class="switch-thumb"></div>
                 </div>
@@ -219,7 +218,7 @@ class TextDisplay(Component):
 
     def update(self, value):
         """Call this server-side to change what the widget shows in the browser."""
-        self.value = value
+        self.value = value.strip()
 
     def handle(self, raw_value):
         # Read-only by default: nothing to do when the client posts to it.
@@ -304,7 +303,8 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 
   /* --- Rounded, padded text display (updatable) --- */
   .text-display {{ background:var(--input-bg); border-radius:12px; padding:12px 16px;
-                    font-size:15px; word-wrap:break-word; min-height:20px; }}
+                    font-size:15px; word-wrap:break-word; min-height:20px; 
+                    white-space: pre-line; }}
 
   /* --- Text / data input field --- */
   .text-input {{ width:100%; box-sizing:border-box; background:var(--input-bg); color:var(--text);
@@ -379,16 +379,16 @@ class App:
         wlan = network.WLAN(network.STA_IF)
         wlan.active(True)
         wlan.connect(self.wifi_ssid, self.wifi_password)
-        print("Подключение к Wi-Fi", end="")
+        print("Connecting to Wi-Fi", end="")
         timeout = 20
         while not wlan.isconnected() and timeout > 0:
             print(".", end="")
             time.sleep(1)
             timeout -= 1
         if not wlan.isconnected():
-            raise RuntimeError("Не удалось подключиться к Wi-Fi")
+            raise RuntimeError("Can't connect to Wi-Fi")
         ip = wlan.ifconfig()[0]
-        print("\nПодключено! IP адрес:", ip)
+        print("\nConnected! IP address:", ip)
         return ip
 
     def _parse_query(self, path):
@@ -431,7 +431,7 @@ class App:
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.bind(addr)
         s.listen(2)
-        print("Веб-сервер запущен на", addr)
+        print("Web server runs on", addr)
 
         while True:
             cl = None
@@ -446,7 +446,7 @@ class App:
                 ).format(content_type, body)
                 cl.send(response)
             except Exception as e:
-                print("Ошибка запроса:", e)
+                print("Request error:", e)
             finally:
                 if cl:
                     cl.close()
