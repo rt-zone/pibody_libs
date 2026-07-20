@@ -129,6 +129,9 @@ class Speaker:
         self._rate = sample_rate
         self._open()
 
+    def get_sample_rate(self):
+        return self._rate
+    
     def set_format(self, format):
         self.deinit()
         self._format = format

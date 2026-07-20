@@ -54,6 +54,9 @@ class SpeechSynthesizer:
         required frequency/mono mode (sample_rate=self.sample_rate, format=MONO) —
         see the example below.
         """
+        
+        rate = amp.get_sample_rate()
+        amp.set_sample_rate(self.sample_rate)
         last_err = None
         for attempt in range(self.retries):
             try:
@@ -68,6 +71,10 @@ class SpeechSynthesizer:
                 raise
             except Exception as e:
                 raise SpeechSynthesizerError("TTS error: {}".format(e))
+            finally:
+                amp.set_sample_rate(rate)
+                
+        amp.set_sample_rate(rate)
         raise SpeechSynthesizerError(
             "Network error after {} attempt(s): {}".format(self.retries, last_err)
         )

@@ -6,3 +6,4 @@ __pycache__
 tmp.py
 stubs
 test
+secrets.py

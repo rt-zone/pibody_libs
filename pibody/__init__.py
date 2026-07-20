@@ -88,15 +88,42 @@ def TelegramBot(token):
     from .IOT.TelegramBot import TelegramBot as TGB
     return TGB(token)
 
+def SDCard(*args):
+        from .modules.sdcard import SDCard
+        return SDCard(*args)
 
+def Microphone(*args):
+        from .modules.microphone import Microphone as _Microphone
+        return _Microphone(*args)
 # Display
 def __getattr__(name):
     if name == "display":
         from .Display import Display as _Display
         return _Display()
+    
     if name == "WebUi":
         from .IOT.WebUi import WebUi as _WebUi
         return _WebUi
+    
+    if name == "SpeechRecognizer":
+        from .modules.stt import SpeechRecognizer
+        return SpeechRecognizer
+    if name == "LLMClient":
+        from .modules.llm_client import LLMClient
+        return LLMClient
+    if name == "sdcard":
+        from .modules.sdcard import SDCard
+        import os
+        sd = SDCard()
+        os.mount(sd, "/sd")
+        return sd
+    if name == "Speaker":
+        from .modules.speaker import Speaker
+        return Speaker
+    if name == "SpeechSynthesizer":
+        from .modules.tts import SpeechSynthesizer
+        return SpeechSynthesizer
+    
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
 
@@ -130,3 +157,11 @@ except ZeroDivisionError:
 
 if FAKE_IMPORT:
     from .IOT.WebUi import WebUi
+
+    from modules.microphone import Microphone
+    from modules.stt import SpeechRecognizer
+    from modules.llm_client import LLMClient
+    from modules.sdcard import SDCard
+    from modules.sdcard import SDCard as sdcard
+    from modules.speaker import Speaker
+    from modules.tts import SpeechSynthesizer

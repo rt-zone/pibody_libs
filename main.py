@@ -1,41 +1,33 @@
 from machine import Pin, Timer
-import neopixel
-# from oled_gfx import SSD1306_I2C
-# from pibody.wrappers.i2c import get_i2c
-from pibody import ClimateSensor
-from pibody import WebUi
-from pibody import OLED
+from pibody import ClimateSensor, WebUi, OLED, LEDTower
 
 oled = OLED('A')
+
 # ---------- Settings ----------
 WIFI_SSID = "Artisan"
 WIFI_PASSWORD = "Artisan2807"
 
-NEOPIXEL_PIN = 28
-NUM_PIXELS = 8
-# --------------------------------
+# --------------------
+tower = LEDTower('C')
 
-np = neopixel.NeoPixel(Pin(NEOPIXEL_PIN), NUM_PIXELS)
-
-# i2c = get_i2c('A')
 bme = ClimateSensor('B')
 
-state = {"r": 0, "g": 150, "b": 255, "brightness": 100, "on": True}
+state = {"r": 0, "g": 150, "b": 255, "brightness": 10, "on": True}
 user_text = ""
 
 
 def apply_state():
     if not state["on"]:
-        for i in range(NUM_PIXELS):
-            np[i] = (0, 0, 0)
+        for i in range(8):
+            tower[i] = (0, 0, 0)
     else:
         scale = state["brightness"] / 100
         r = int(state["r"] * scale)
         g = int(state["g"] * scale)
         b = int(state["b"] * scale)
-        for i in range(NUM_PIXELS):
-            np[i] = (r, g, b)
-    np.write()
+        for i in range(8):
+            tower[i] = (r, g, b)
+    tower.write()
 
 
 def on_color(r, g, b):
@@ -114,21 +106,27 @@ def on_timer(t):
     read_climate()
 
 
-# --- Глобальная тема ---
-theme = {
-    "bg": "#0d1117",
-    "card_bg": "#161b22",
-    "text": "#e6edf3",
-    "muted": "#8b949e",
-    "accent": "#58a6ff",
-    "on_color": "#3fb950",
-    "off_color": "#30363d",
-    "radius": "20px",
-}
+# # --- Глобальная тема ---
+# theme = {
+#     "bg": "#0d1117",
+#     "card_bg": "#161b22",
+#     "text": "#e6edf3",
+#     "muted": "#8b949e",
+#     "accent": "#58a6ff",
+#     "on_color": "#3fb950",
+#     "off_color": "#30363d",
+#     "radius": "20px",
+# }
+def on_coffee():
+    oled.fill(0)
+    oled.text("Coffee", 38,26)
+    oled.show()
+    from time import sleep
+    sleep(2)
 
 app = WebUi("NeoPixel-контроллер",
-          wifi_ssid=WIFI_SSID, wifi_password=WIFI_PASSWORD,
-          theme=theme)
+        wifi_ssid=WIFI_SSID, wifi_password=WIFI_PASSWORD,
+        )
 
 app.add(WebUi.Label("Настройки света"))
 app.add(WebUi.ColorPicker("Цвет", value=(0, 150, 255), on_change=on_color))
@@ -144,7 +142,7 @@ app.add(WebUi.Label("Данные климат-сенсора"))
 sensor_value_display = WebUi.TextDisplay("Температура / давление / влажность", value="T: --  P: --  H: --")
 app.add(sensor_value_display)
 
-app.add(WebUi.Button("Buy coffee for me", color="#e74c3c"))
+app.add(WebUi.Button("Buy coffee for me",on_coffee, color="#e74c3c"))
 
 apply_state()
 
