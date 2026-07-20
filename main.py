@@ -3,7 +3,7 @@ import neopixel
 # from oled_gfx import SSD1306_I2C
 # from pibody.wrappers.i2c import get_i2c
 from pibody import ClimateSensor
-from pibody.IOT.WebUi import App, ColorPicker, Slider, Toggle, Label, Button, TextInput, TextDisplay
+from pibody import WebUi
 from pibody import OLED
 
 oled = OLED('A')
@@ -126,25 +126,25 @@ theme = {
     "radius": "20px",
 }
 
-app = App("NeoPixel-контроллер",
+app = WebUi("NeoPixel-контроллер",
           wifi_ssid=WIFI_SSID, wifi_password=WIFI_PASSWORD,
           theme=theme)
 
-app.add(Label("Настройки света"))
-app.add(ColorPicker("Цвет", value=(0, 150, 255), on_change=on_color))
-app.add(Slider("Яркость", min=0, max=100, value=100,
+app.add(WebUi.Label("Настройки света"))
+app.add(WebUi.ColorPicker("Цвет", value=(0, 150, 255), on_change=on_color))
+app.add(WebUi.Slider("Яркость", min=0, max=100, value=100,
                 on_change=on_brightness, color="#f1c40f"))
-app.add(Toggle("Питание", value=True, on_change=on_toggle))
+app.add(WebUi.Toggle("Питание", value=True, on_change=on_toggle))
 
-app.add(Label("Текст на дисплей"))
-app.add(TextInput("Введите текст", value="", on_change=on_text))
+app.add(WebUi.Label("Текст на дисплей"))
+app.add(WebUi.TextInput("Введите текст", value="", on_change=on_text))
 # app.add()
 
-app.add(Label("Данные климат-сенсора"))
-sensor_value_display = TextDisplay("Температура / давление / влажность", value="T: --  P: --  H: --")
+app.add(WebUi.Label("Данные климат-сенсора"))
+sensor_value_display = WebUi.TextDisplay("Температура / давление / влажность", value="T: --  P: --  H: --")
 app.add(sensor_value_display)
 
-app.add(Button("Buy coffee for me", color="#e74c3c"))
+app.add(WebUi.Button("Buy coffee for me", color="#e74c3c"))
 
 apply_state()
 

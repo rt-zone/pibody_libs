@@ -450,3 +450,24 @@ class App:
             finally:
                 if cl:
                     cl.close()
+
+
+class WebUi(App):
+    Label = Label
+    Slider = Slider
+    Toggle = Toggle
+    ColorPicker = ColorPicker
+    Button = Button
+    TextInput = TextInput
+    TextDisplay = TextDisplay
+
+    _WIDGET_NAMES = {"Label", "Slider", "Toggle", "ColorPicker",
+                    "Button", "TextInput", "TextDisplay"}
+
+    def __getattribute__(self, name):
+        if name in WebUI._WIDGET_NAMES:
+            raise AttributeError(
+                f"'{name}' Accessible only like WebUI.{name}(), "
+                f"not like (web.{name})"
+            )
+        return object.__getattribute__(self, name)

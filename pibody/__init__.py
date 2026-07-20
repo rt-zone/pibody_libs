@@ -88,14 +88,15 @@ def TelegramBot(token):
     from .IOT.TelegramBot import TelegramBot as TGB
     return TGB(token)
 
-# def WebUi():
-#     from .IOT.WebUi import 
 
 # Display
 def __getattr__(name):
     if name == "display":
         from .Display import Display as _Display
         return _Display()
+    if name == "WebUi":
+        from .IOT.WebUi import WebUi as _WebUi
+        return _WebUi
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
 
@@ -122,3 +123,10 @@ Pot             = Potentiometer
 #Legacy support
 GyroAxel        = GyroAccel
 
+try:
+    _ = 1 / 0
+except ZeroDivisionError:
+    FAKE_IMPORT = False
+
+if FAKE_IMPORT:
+    from .IOT.WebUi import WebUi
