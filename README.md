@@ -1,3 +1,4 @@
 ### PiBody Libraries
-Libraries for PiBody alongside with wrappers that facilitate work and extend functionality of some modules.
+Libraries for PiBody alongside wrappers that facilitate work and extend the functionality of some modules.
+Additionally, included Demo projects.
 [online-ide](https://code.artisan.education)
