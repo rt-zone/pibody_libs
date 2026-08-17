@@ -74,6 +74,11 @@ def sample(slot, channel, value):
     if not _enabled or slot is None:
         return
 
+    # Rounded before the comparison, or an analog reading would count as changed on every poll:
+    # a resting potentiometer wobbles in the last digits and would flood the channel at full rate.
+    if isinstance(value, float):
+        value = round(value, 3)
+
     key = (slot, channel)
     if _last_value.get(key) == value:
         return
@@ -86,6 +91,12 @@ def sample(slot, channel, value):
 
     _last_value[key] = value
     _last_sent[key] = now
+    # A driver that answers True/False would otherwise reach the wire as "True", which the host
+    # reads as not-a-number and drops the whole frame.
+    if value is True:
+        value = 1
+    elif value is False:
+        value = 0
     print(_SEP + 'T|' + str(time.ticks_diff(now, _t0)) + '|' + str(slot) + '|' + channel + '|' + str(value))
 
 
@@ -109,44 +120,69 @@ def flush_dropped():
 # channel of None means "the channel this object was built for", which is what keeps LED and Button
 # apart even though the factories hand back the very same class.
 #
-# Never wrap a method that the library itself calls from another method. `Pin.value` is the case
-# that taught this: it is the natural place to catch `led.value(1)`, but `Pin.read` — the button's
-# only method — is implemented as `return self.value()`, and Pin is the very same class for both.
-# Wrapping it put the button's every read through a wrapper written for writing, and over USB the
-# button stopped responding at all. `led.value(1)` therefore goes unrecorded; `on()` and `off()`
-# cover what lessons actually use, and a silent gap is worth incomparably less than a dead button.
+# Wrapping happens per object, never per class — see `_hook` for why that is not a preference but
+# a hard requirement. It also keeps modules that share a class from sharing wrappers: `LED` and
+# `Button` are both a `Pin`, and each instance now carries only what its own kind reports.
 
-_READ = 'read'
-_WRITE = 'write'
-_ARG = 'arg'
+_READ = 'read'        # method -> channel; reports what it returned
+_SCALED = 'scaled'    # method -> (channel, divisor); the raw *_u16 twins of a read
+_WRITE = 'write'      # method -> constant, or (channel, constant) when it is not the object's own
+_ARG = 'arg'          # method -> channel; reports the argument it was given
+_SCALED_ARG = 'sarg'  # method -> (channel, divisor); the raw *_u16 twin of an argument
+_AFTER = 'after'      # method -> (channel, getter); reports the state left behind
 
 _SPECS = {
-    'LED': {'channel': 'on', _WRITE: {'on': 1, 'off': 0}},
-    'Button': {'channel': 'state', _READ: {'read': None}},
-    'ADC': {'channel': 'value', _READ: {'read': None}},
+    # Lamp and button share PinExt.Pin, so both get the whole surface of it — `value` in either
+    # direction, `on`/`off`/`high`/`low`, `toggle`, `read`. A method the firmware does not have is
+    # skipped rather than fatal, so listing `high`/`low` costs nothing where they are absent.
+    'LED': {
+        'channel': 'on',
+        _WRITE: {'on': 1, 'off': 0, 'high': 1, 'low': 0},
+        _ARG: {'value': None},
+        _AFTER: {'toggle': (None, 'value')},
+        _READ: {'read': None},
+    },
+    'Button': {'channel': 'state', _READ: {'read': None, 'value': None}},
+    # `read()` is `read_u16() / 65535`; scaling the raw twin keeps one number on the chart whichever
+    # of the two a lesson calls.
+    'ADC': {'channel': 'value', _READ: {'read': None}, _SCALED: {'read_u16': (None, 65535)}},
     'DistanceSensor': {'channel': 'distance', _READ: {'read': None}},
     'ClimateSensor': {_READ: {'read_temperature': 'temperature', 'read_humidity': 'humidity', 'read_pressure': 'pressure'}},
-    'ColorSensor': {_READ: {'readRGB': ('r', 'g', 'b')}},
+    # Every other colour path — `read`, `readHSV`, `detectColor` — goes through `readRGB`.
+    'ColorSensor': {_READ: {'readRGB': ('r', 'g', 'b'), 'lux': 'lux'}},
+    # `read()` returns both axes by calling these two.
     'Joystick': {_READ: {'read_x': 'x', 'read_y': 'y'}},
-    # RotaryEncoder.read() is an alias for value(), so value() is the one that catches both. Safe to
-    # wrap here where Pin.value was not: this one is a plain Python method, not a native inherited.
-    'Encoder': {'channel': 'position', _READ: {'value': None}},
-    # Both drivers expose these two and both return a triple; MPU6050.read() calls them internally,
-    # LSM6DS3.read_accel() goes the other way round — wrapping the pair covers either.
-    'GyroAccel': {_READ: {'read_accel': ('ax', 'ay', 'az'), 'read_gyro': ('gx', 'gy', 'gz')}},
+    # `read()` is an alias for `value()`; `set_value`/`reset` move the count without any read at all,
+    # so they report it themselves or the chart would lag behind the program.
+    'Encoder': {'channel': 'position', _READ: {'value': None}, _ARG: {'set_value': None}, _WRITE: {'reset': 0}},
+    # Both drivers expose accel and gyro and both return a triple; MPU6050.read() calls them,
+    # LSM6DS3.read_accel() goes the other way round. Temperature is MPU6050's alone and the step
+    # counter is the LSM6DS3's — each is skipped on the driver that lacks it.
+    'GyroAccel': {
+        _READ: {
+            'read_accel': ('ax', 'ay', 'az'),
+            'read_gyro': ('gx', 'gy', 'gz'),
+            'read_temperature': 'temperature',
+            'get_step_count': 'steps',
+        }
+    },
     # Outputs whose value is the argument, not the return: a servo told to go to 90° answers
-    # nothing. `Servo.__call__` and `Buzzer.beep`/`boop`/`__call__` all route through the wrapped
-    # method, so one hook each covers every way a lesson drives them.
-    'Servo': {'channel': 'angle', _ARG: {'angle': None}},
-    # PWMExt.duty takes 0..1 and calls the native duty_u16 underneath, so the hook goes on duty.
-    # freq is left alone: a lesson sets it once, and it is an inherited native — the combination
-    # that killed the button.
-    'PWM': {'channel': 'brightness', _ARG: {'duty': None}},
-    'Buzzer': {'channel': 'freq', _ARG: {'make_sound': None}},
-    # The tower is driven only through `__call__(color)`, which then calls the native `fill` — so
-    # `__call__` is the one to wrap; `fill` is inherited, and wrapping inherited natives is what
-    # once killed the button.
-    'LEDTower': {_ARG: {'__call__': ('r', 'g', 'b')}},
+    # nothing. `Servo.__call__` routes through `angle`, so one hook covers both.
+    'Servo': {'channel': 'angle', _ARG: {'angle': None}, _WRITE: {'on': ('on', 1), 'off': ('on', 0)}},
+    # `duty` takes 0..1 and `duty_u16` the raw 16 bits; both land on the same channel in the same
+    # units. `freq` matters for a buzzer and is dropped for a lamp, which declares no such channel.
+    'PWM': {'channel': 'brightness', _ARG: {'duty': None, 'freq': 'freq'}, _SCALED_ARG: {'duty_u16': (None, 65535)}},
+    # `beep`, `boop` and `__call__` all route through `make_sound`, whose first argument is the
+    # frequency. `on`/`off` are mute and unmute — a different quantity, hence the explicit channel.
+    'Buzzer': {
+        'channel': 'freq',
+        _ARG: {'make_sound': None, 'freq': None, 'volume': 'volume'},
+        _WRITE: {'on': ('on', 1), 'off': ('on', 0)},
+    },
+    # The tower is driven through `__call__(color)`, which calls the inherited native `fill`.
+    # Both are hooked: `__call__` on the class, because special methods are looked up there, and
+    # `fill` on the instance for a lesson that calls it directly.
+    'LEDTower': {_ARG: {'__call__': ('r', 'g', 'b'), 'fill': ('r', 'g', 'b')}},
     'SoundSensor': {_READ: {'read_analog': 'value', 'read_digital': 'state'}},
 }
 
@@ -193,64 +229,151 @@ def _emit(obj, channel, value):
         pass
 
 
-def _reader(original, channel):
-    def method(self, *args, **kwargs):
-        result = original(self, *args, **kwargs)
+def _emit_many(obj, channels, values):
+    try:
+        for i in range(len(channels)):
+            _emit(obj, channels[i], values[i])
+    except Exception:
+        pass
+
+
+def _reader(obj, call, channel):
+    def method(*args, **kwargs):
+        result = call(*args, **kwargs)
         if isinstance(channel, tuple):
-            for i in range(len(channel)):
-                _emit(self, channel[i], result[i])
+            _emit_many(obj, channel, result)
         elif result is not None:
-            _emit(self, channel, result)
+            _emit(obj, channel, result)
         return result
 
     return method
 
 
-def _argument(original, channel):
+def _scaled(obj, call, spec):
+    channel, divisor = spec
+
+    def method(*args, **kwargs):
+        result = call(*args, **kwargs)
+        if result is not None:
+            _emit(obj, channel, result / divisor)
+        return result
+
+    return method
+
+
+def _writer(obj, call, spec):
+    # A bare constant reports on the object's own channel; a pair names a different one, which is
+    # how a buzzer's mute lands on `on` while its readings stay on `freq`.
+    channel, const = spec if isinstance(spec, tuple) else (None, spec)
+
+    def method(*args, **kwargs):
+        result = call(*args, **kwargs)
+        _emit(obj, channel, const)
+        return result
+
+    return method
+
+
+def _argument(obj, call, channel):
+    def method(*args, **kwargs):
+        result = call(*args, **kwargs)
+        if args:
+            if isinstance(channel, tuple):
+                _emit_many(obj, channel, args[0])
+            else:
+                _emit(obj, channel, args[0])
+        return result
+
+    return method
+
+
+def _scaled_argument(obj, call, spec):
+    channel, divisor = spec
+
+    def method(*args, **kwargs):
+        result = call(*args, **kwargs)
+        if args:
+            _emit(obj, channel, args[0] / divisor)
+        return result
+
+    return method
+
+
+def _after(obj, call, spec):
+    def method(*args, **kwargs):
+        result = call(*args, **kwargs)
+        # `toggle()` returns nothing and takes nothing; the interesting value is where the pin
+        # ended up, so it is read back. No recursion: the getter is the `_ARG` wrapper, which
+        # stays silent when called without an argument.
+        try:
+            _emit(obj, spec[0], getattr(obj, spec[1])())
+        except Exception:
+            pass
+        return result
+
+    return method
+
+
+def _hook(obj, name, make, arg):
+    """Wrap one method of one object.
+
+    On the instance, never on the class. A class-level wrapper has to call the method it replaced,
+    and reaching that method through `getattr(cls, name)` returns it unbound — which for anything
+    inherited from a native type (`Pin.on` and `Pin.off` come from `machine.Pin`) is not callable
+    with a subclass instance. MicroPython answers that with a hard crash; on the board it silently
+    misfired instead, and a second LED simply never lit. `getattr(obj, name)` hands back a method
+    already bound to this object, and an instance attribute shadows the class for every later call.
+    """
+    call = getattr(obj, name, None)
+    if call is None:
+        return
+    try:
+        setattr(obj, name, make(obj, call, arg))
+    except Exception:
+        pass
+
+
+def _hook_call(obj, channel):
+    """`__call__` is the exception: special methods are looked up on the type, so the instance
+    cannot shadow them. Only the LED tower needs it, and its `__call__` is defined in Python
+    (NeoPixelExt), so replacing it on the class and calling the original with an explicit self is
+    safe here in a way it never is for an inherited native."""
+    cls = type(obj)
+    if (cls, '__call__') in _patched:
+        return
+    original = getattr(cls, '__call__', None)
+    if original is None:
+        return
+    _patched[(cls, '__call__')] = True
+
     def method(self, *args, **kwargs):
         result = original(self, *args, **kwargs)
         if args:
-            try:
-                if isinstance(channel, tuple):
-                    for i in range(len(channel)):
-                        _emit(self, channel[i], args[0][i])
-                else:
-                    _emit(self, channel, args[0])
-            except Exception:
-                pass
+            _emit_many(self, channel, args[0])
         return result
 
-    return method
+    try:
+        setattr(cls, '__call__', method)
+    except Exception:
+        del _patched[(cls, '__call__')]
 
 
-def _writer(original, const):
-    def method(self, *args, **kwargs):
-        result = original(self, *args, **kwargs)
-        _emit(self, None, const)
-        return result
-
-    return method
-
-
-def _patch_class(cls, spec):
-    """Wrap the methods of the class an instance came from — once per method, however many objects.
-
-    Marked per (class, method) rather than per class, because different factories hand back the
-    same class: `LED` and `Button` are both a Pin, and marking the class done after the first of
-    them would leave the other's methods bare.
-
-    A method the class does not have is skipped rather than fatal: drivers differ between kit
-    revisions, and one missing `read_*` must not cost the module its other channels.
-    """
-    for kind, wrap in ((_READ, _reader), (_WRITE, _writer), (_ARG, _argument)):
-        for name in spec.get(kind, {}):
-            if (cls, name) in _patched:
-                continue
-            original = getattr(cls, name, None)
-            if original is None:
-                continue
-            _patched[(cls, name)] = True
-            setattr(cls, name, wrap(original, spec[kind][name]))
+def _instrument(obj, spec):
+    for name in spec.get(_READ, {}):
+        _hook(obj, name, _reader, spec[_READ][name])
+    for name in spec.get(_SCALED, {}):
+        _hook(obj, name, _scaled, spec[_SCALED][name])
+    for name in spec.get(_WRITE, {}):
+        _hook(obj, name, _writer, spec[_WRITE][name])
+    for name in spec.get(_SCALED_ARG, {}):
+        _hook(obj, name, _scaled_argument, spec[_SCALED_ARG][name])
+    for name in spec.get(_AFTER, {}):
+        _hook(obj, name, _after, spec[_AFTER][name])
+    for name in spec.get(_ARG, {}):
+        if name == '__call__':
+            _hook_call(obj, spec[_ARG][name])
+        else:
+            _hook(obj, name, _argument, spec[_ARG][name])
 
 
 def _factory(original, spec):
@@ -259,7 +382,7 @@ def _factory(original, spec):
         try:
             obj._tm_slot = slot
             obj._tm_channel = spec.get('channel')
-            _patch_class(type(obj), spec)
+            _instrument(obj, spec)
         except Exception:
             pass
         return obj
